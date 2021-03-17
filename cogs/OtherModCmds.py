@@ -111,5 +111,25 @@ class OtherModCmds(commands.Cog):
             )
             return
 
+    @commands.command()
+    @commands.has_permissions(manage_messages=True)
+    async def msgtime(self, ctx, id1: int):
+        await ctx.send(f"Time (in UTC) is: {discord.utils.snowflake_time(id1)}")
+        return
+
+    @msgtime.error
+    async def msgtime_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("First get enough permissions lol!")
+            return
+
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("You need to send me the ID too!")
+            return
+
+        if isinstance(error, commands.BadArgument):
+            await ctx.send("You check the ID again!")
+            return
+
 def setup(bot):
     bot.add_cog(OtherModCmds(bot))
