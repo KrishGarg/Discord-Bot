@@ -27,6 +27,20 @@ class ReactionRole(commands.Cog):
 
         await ctx.message.delete()
 
+    @_reactrole.error
+    async def _reactrole_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("You don't have enough permissions to do that.")
+            return
+
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send(f"I think you missed some arguments. I know this is a complicated command so to check the correct syntax, run `{self.bot.command_prefix}help moderation` !")
+            return
+
+        if isinstance(error, commands.BadArgument):
+            await ctx.send("Yo check the arguments you sent me again!")
+            return
+
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
         if payload.member.bot:
