@@ -35,7 +35,12 @@ class Events(commands.Cog):
             await message.channel.send(messagetosend)
             return
 
-        await self.bot.process_commands(message)
+    @commands.Cog.listener()
+    async def on_message_edit(self, before, after):
+        try:
+            await self.bot.process_commands(after)
+        except:
+            pass
 
     # Error handling (Atleast some of it)
     @commands.Cog.listener()
