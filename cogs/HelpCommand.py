@@ -54,6 +54,10 @@ class HelpCommand(commands.Cog):
     **{0}warn [user] [reason] :** `Kick Members`^. Warns the mentioned person with the given reason. In this, giving a reason is compulsury.
 
     **{0}warnings [user] :** Shows the warnings the mentioned person has received till now.
+    
+    **{0}msgtime [message id] :** `Manage Messages`^. Returns the time at which the message was sent.
+    
+    **{0}rr or {0}reactrole [emoji] [role id or tag] [message id] :** `Manage Roles`^. Adds a reaction role to a message. \*BETA*
 
     ^ **Member should have the required permission to run the command!**
             '''.format(self.bot.command_prefix)
