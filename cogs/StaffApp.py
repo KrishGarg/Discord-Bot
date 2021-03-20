@@ -15,9 +15,10 @@ class StaffApp(commands.Cog):
         await emb.add_reaction('📜')
         await ctx.message.delete()
         def check(reaction, user):
-            return str(reaction.emoji) == '📜'
+            return str(reaction.emoji) == '📜' and emb.id == reaction.message.id
         while True:
             rr1, applier = await self.bot.wait_for('reaction_add', check=check)
+            await emb.remove_reaction(emoji=rr1,member=applier)
             applier_dm = await applier.create_dm()
             await applier_dm.send("This is a test message")
 
