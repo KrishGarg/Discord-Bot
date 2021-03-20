@@ -133,7 +133,7 @@ class Admin(commands.Cog):
         else:
             await ctx.send('\N{OK HAND SIGN}')
 
-    @commands.group(name='reload', hidden=True, invoke_without_command=True)
+    @commands.group(name='reload', hidden=False, invoke_without_command=True)
     async def _reload(self, ctx, *, module):
         """Reloads a module."""
         try:
