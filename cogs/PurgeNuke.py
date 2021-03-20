@@ -9,6 +9,7 @@ class PurgeNuke(commands.Cog):
     # Purge Command
     @commands.command()
     @commands.has_permissions(manage_messages=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def purge(self, ctx, num: int):
         if 0 < num < 100:
             await ctx.channel.purge(limit=num + 1, bulk=True)
@@ -53,6 +54,7 @@ class PurgeNuke(commands.Cog):
     # Nuke command
     @commands.command()
     @commands.has_permissions(manage_channels=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def nuke(self, ctx, errorHandling=None):
         if errorHandling is None:
             await ctx.send(

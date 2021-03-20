@@ -16,6 +16,7 @@ class WarningSys(commands.Cog):
     # Warn command
     @commands.command()
     @commands.has_permissions(kick_members=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def warn(self, ctx, user: discord.User, *reason: str):
         try:
             if not reason:
@@ -73,6 +74,7 @@ class WarningSys(commands.Cog):
 
     # Warnings command
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def warnings(self, ctx, user: discord.User):
         for current_user in report['users']:
             if user.name == current_user['name']:

@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-import asyncio
 
 class StaffApp(commands.Cog):
     def __init__(self, bot):
@@ -8,6 +7,7 @@ class StaffApp(commands.Cog):
 
     # Staff App Command
     @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def staffapp(self, ctx):
         emb1 = discord.Embed(title="Staff Application!", description="React to the below 📜 paper to start the process! If you can't start the process, there may be some other person applying so please wait!", color= 0x00ff00)
         emb1.set_footer(text='OwO', icon_url=f'{self.bot.user.avatar_url}')

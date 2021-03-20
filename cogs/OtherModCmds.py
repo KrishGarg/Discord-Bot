@@ -9,6 +9,7 @@ class OtherModCmds(commands.Cog):
     # Find Message Command
     @commands.command()
     @commands.has_permissions(manage_messages=True)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def findmessage(self, ctx, id1: int):
         try:
             the_msg = await ctx.channel.fetch_message(id1)
@@ -32,6 +33,7 @@ class OtherModCmds(commands.Cog):
     # Yes No Command!
     @commands.command()
     @commands.has_permissions(manage_messages=True)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def yesno(self, ctx, *, text: str):
         channel = ctx.channel
         await ctx.message.delete()
@@ -55,6 +57,7 @@ class OtherModCmds(commands.Cog):
     # Add yes no command!
     @commands.command()
     @commands.has_permissions(manage_messages=True)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def addyesno(self, ctx, the_id):
         msgid = the_id
         themsg = await ctx.fetch_message(int(msgid))
@@ -84,6 +87,7 @@ class OtherModCmds(commands.Cog):
     # Prefix changer
     @commands.command()
     @commands.has_permissions(administrator=True)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def prefix(self, ctx, prefixnew):
         # This and below function for changing prefixes
         def change_prefix(newprefix):
@@ -113,6 +117,7 @@ class OtherModCmds(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(manage_messages=True)
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def msgtime(self, ctx, id1: int):
         await ctx.send(f"Time (in UTC) is: {discord.utils.snowflake_time(id1)}")
         return
@@ -130,6 +135,17 @@ class OtherModCmds(commands.Cog):
         if isinstance(error, commands.BadArgument):
             await ctx.send("You check the ID again!")
             return
+
+    # Say command
+    @commands.command()
+    @commands.has_permissions(Administrator= True)
+    @commands.cooldown(1, 30, commands.BucketType.user)
+    async def say(self, ctx, *, text: str):
+        x = text
+        if "{@}" in text:
+            x = text.replace("{@}", "@")
+        await ctx.send(x)
+        await ctx.message.delete()
 
 def setup(bot):
     bot.add_cog(OtherModCmds(bot))

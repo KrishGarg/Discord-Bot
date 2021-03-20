@@ -20,6 +20,7 @@ class AdminOnly(commands.Cog):
     # Spam command!
     @commands.command()
     @commands.is_owner()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def spam(self, ctx, count: int, *, text: str):
         await ctx.message.delete()
         for i in range(count):

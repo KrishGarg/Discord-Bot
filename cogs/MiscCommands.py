@@ -9,6 +9,7 @@ class MiscCommands(commands.Cog):
 
     # Uptime Command
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def uptime(self, ctx):
         current_time = time.time()
         difference = int(round(current_time - self.bot._start_time))
@@ -27,6 +28,7 @@ class MiscCommands(commands.Cog):
 
     # Server Info Command!
     @commands.command(aliases=['svinfo', 'serverinfo', 'infoserver', 'infosv', 'si'])
+    @commands.cooldown(1, 20, commands.BucketType.user)
     async def _svinfo(self, ctx):
         the_embed = discord.Embed(title="Server Info!", color=0x00ff00)
         the_embed.add_field(name="**__Server Name__**",
@@ -65,17 +67,9 @@ class MiscCommands(commands.Cog):
 
         await ctx.send(embed=the_embed)
 
-    # Say command
-    @commands.command()
-    async def say(self, ctx, *, text: str):
-        x = text
-        if "{@}" in text:
-            x = text.replace("{@}", "@")
-        await ctx.send(x)
-        await ctx.message.delete()
-
     # Avatar command!
     @commands.command(aliases=['avatar', 'av'])
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def _avatar(self, ctx, *, para=None):
         while True:
             try:
@@ -135,11 +129,13 @@ class MiscCommands(commands.Cog):
 
     # Ping/Latency Command!
     @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def ping(self, ctx):
         ping = round(self.bot.latency * 1000)
         await ctx.send(f":ping_pong: Pong! Latency is {ping}ms!")
 
     @commands.command()
+    @commands.cooldown(1, 20, commands.BucketType.user)
     async def timer(self, ctx, time: int):
         timeinsec = time
         if time > 200:

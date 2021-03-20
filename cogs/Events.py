@@ -50,5 +50,8 @@ class Events(commands.Cog):
                 f"Yo I can't find that command. Try `{self.bot.command_prefix}help` for the list of commands available!"
             )
 
+        if isinstance(error, commands.CommandOnCooldown):
+            await ctx.send(f"The command is on cooldown! Try again in {error.retry_after :,.2f} seconds.")
+
 def setup(bot):
     bot.add_cog(Events(bot))

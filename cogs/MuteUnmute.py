@@ -9,6 +9,7 @@ class MuteUnmute(commands.Cog):
     # Create mute role command
     @commands.command()
     @commands.has_permissions(manage_roles=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def muterole(self,ctx):
         if discord.utils.get(ctx.guild.roles, name="Muted"):
             await ctx.send("Hey looks like there is already a 'Muted' role!")
@@ -71,6 +72,7 @@ class MuteUnmute(commands.Cog):
     # Mute command
     @commands.command()
     @commands.has_permissions(manage_roles=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def mute(self, ctx, user: discord.Member = None, *, reason=None):
         if not discord.utils.get(ctx.guild.roles, name="Muted"):
             await ctx.send(
@@ -114,6 +116,7 @@ class MuteUnmute(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(manage_roles=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def unmute(self, ctx, user: discord.Member):
         if discord.utils.get(ctx.guild.roles, name="Muted") in user.roles:
             await user.remove_roles(

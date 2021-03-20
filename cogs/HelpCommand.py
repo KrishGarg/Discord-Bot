@@ -7,6 +7,7 @@ class HelpCommand(commands.Cog):
 
     # Help Command!
     @commands.command()
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def help(self, ctx, cmd=None):
         if cmd == None:
             commandshelptext = '''

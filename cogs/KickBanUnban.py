@@ -8,6 +8,7 @@ class KickBanUnban(commands.Cog):
     # Kick Command
     @commands.command()
     @commands.has_permissions(kick_members=True)
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def kick(self, ctx, user: discord.Member, reason1="None Given"):
         usersdm = await user.create_dm()
         dm_embed = discord.Embed(title="YOU HAVE BEEN KICKED!",
@@ -46,6 +47,7 @@ class KickBanUnban(commands.Cog):
     # Ban Command
     @commands.command()
     @commands.has_permissions(ban_members=True)
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def ban(self, ctx, user: discord.Member, *, reason1="None Given"):
         usersdm = await user.create_dm()
         dm_embed = discord.Embed(title="YOU HAVE BEEN BANNED!",
@@ -84,6 +86,7 @@ class KickBanUnban(commands.Cog):
     # Unban command
     @commands.command()
     @commands.has_permissions(ban_members=True)
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def unban(self, ctx, user_id: int, *, reason1="None Given"):
         try:
             user = await self.bot.fetch_user(user_id)
