@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import time, datetime
-
+import asyncio
 
 class MiscCommands(commands.Cog):
     def __init__(self,bot):
@@ -139,6 +139,18 @@ class MiscCommands(commands.Cog):
         ping = round(self.bot.latency * 1000)
         await ctx.send(f":ping_pong: Pong! Latency is {ping}ms!")
 
+    @commands.command()
+    async def timer(self, ctx, time: int):
+        timeinsec = time
+        if time > 200:
+            await ctx.send("Wanna break me?! Limit is 200 seconds!!")
+            return
+        themsg = await ctx.send(f"{time}s..")
+        for i in range(time):
+            timeinsec -= 1
+            await themsg.edit(content=f"{timeinsec}s..")
+            await asyncio.sleep(1)
+        await ctx.send(f'{ctx.author.mention}, Timer is Up!')
 
 def setup(bot):
     bot.add_cog(MiscCommands(bot))
