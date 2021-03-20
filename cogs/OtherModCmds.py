@@ -138,7 +138,7 @@ class OtherModCmds(commands.Cog):
 
     # Say command
     @commands.command()
-    @commands.has_permissions(Administrator= True)
+    @commands.has_permissions(administrator=True)
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def say(self, ctx, *, text: str):
         x = text
