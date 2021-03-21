@@ -18,6 +18,10 @@ bot.owner_id = 453875226757955585
 
 # Using bot object to transfer data through cogs
 bot._start_time = ''
+bot._welcomemessagesenabled = False
+bot._welcmsgch = 0
+bot._leavemessagesenabled = False
+bot._leavemsgch = 0
 
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
