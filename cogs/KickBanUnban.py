@@ -23,7 +23,7 @@ class KickBanUnban(commands.Cog):
             reason=
             f'{reason1} -Kicked By {ctx.author.name}#{ctx.author.discriminator}')
         await ctx.send(
-            f"I banned {user.mention} with the reason given as `{reason1}")
+            f"I kicked {user.mention} with the reason given as `{reason1}`")
 
     # Kick Error handling
     @kick.error
