@@ -52,6 +52,7 @@ class Events(commands.Cog):
 
         if isinstance(error, commands.CommandOnCooldown):
             await ctx.send(f"The command is on cooldown! Try again in {error.retry_after :,.2f} seconds.")
+            return
 
 def setup(bot):
     bot.add_cog(Events(bot))

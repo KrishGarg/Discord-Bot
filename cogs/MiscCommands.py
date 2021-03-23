@@ -135,7 +135,7 @@ class MiscCommands(commands.Cog):
         await ctx.send(f":ping_pong: Pong! Latency is {ping}ms!")
 
     @commands.command()
-    @commands.cooldown(1, 20, commands.BucketType.user)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def timer(self, ctx, time: int):
         timeinsec = time
         if time > 200:
@@ -147,6 +147,15 @@ class MiscCommands(commands.Cog):
             await themsg.edit(content=f"{timeinsec}s..")
             await asyncio.sleep(1)
         await ctx.send(f'{ctx.author.mention}, Timer is Up!')
+
+    @timer.error
+    async def timer_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Tell me how long the timer should last in seconds too!")
+            return
+        if isinstance(error, commands.BadArgument):
+            await ctx.send("Umm. Check that time you sent me again dude.")
+            return
 
 def setup(bot):
     bot.add_cog(MiscCommands(bot))
