@@ -1,15 +1,17 @@
+import json
+
 import discord
 from discord.ext import commands
-import json
+
 
 class ReactionRole(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=['rr','reactrole'])
+    @commands.command(aliases=['rr', 'reactrole'])
     @commands.has_permissions(manage_roles=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def _reactrole(self, ctx, emoji, role : discord.Role, messageid):
+    async def _reactrole(self, ctx, emoji, role: discord.Role, messageid):
         msg = await ctx.channel.fetch_message(messageid)
         await msg.add_reaction(emoji)
         with open('cogs/reactrole.json') as json_file:
@@ -35,7 +37,8 @@ class ReactionRole(commands.Cog):
             return
 
         if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(f"I think you missed some arguments. I know this is a complicated command so to check the correct syntax, run `{self.bot.command_prefix}help moderation` !")
+            await ctx.send(
+                f"I think you missed some arguments. I know this is a complicated command so to check the correct syntax, run `{self.bot.command_prefix}help moderation` !")
             return
 
         if isinstance(error, commands.BadArgument):
@@ -61,6 +64,7 @@ class ReactionRole(commands.Cog):
                 if x['emoji'] == payload.emoji.name and int(x['message_id']) == payload.message_id:
                     role = discord.utils.get(self.bot.get_guild(payload.guild_id).roles, id=x['role_id'])
                     await self.bot.get_guild(payload.guild_id).get_member(payload.user_id).remove_roles(role)
+
 
 def setup(bot):
     bot.add_cog(ReactionRole(bot))

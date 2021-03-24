@@ -1,9 +1,10 @@
-import discord
-from discord.ext import commands
 import asyncio
 
+from discord.ext import commands
+
+
 class PurgeNuke(commands.Cog):
-    def __init__(self,bot):
+    def __init__(self, bot):
         self.bot = bot
 
     # Purge Command
@@ -88,6 +89,7 @@ class PurgeNuke(commands.Cog):
 
         if isinstance(error, commands.CommandError):
             await ctx.send("Something went wrong! Try again later!")
+
 
 def setup(bot):
     bot.add_cog(PurgeNuke(bot))

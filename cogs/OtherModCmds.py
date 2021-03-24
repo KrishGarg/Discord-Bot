@@ -1,6 +1,8 @@
+from time import sleep
+
 import discord
 from discord.ext import commands
-from time import sleep
+
 
 class OtherModCmds(commands.Cog):
     def __init__(self, bot):
@@ -92,6 +94,7 @@ class OtherModCmds(commands.Cog):
         # This and below function for changing prefixes
         def change_prefix(newprefix):
             self.bot.command_prefix = newprefix
+
         if prefixnew != "reset":
             change_prefix(prefixnew)
         # to reset to default prefix
@@ -146,6 +149,7 @@ class OtherModCmds(commands.Cog):
             x = text.replace("{@}", "@")
         await ctx.send(x)
         await ctx.message.delete()
+
 
 def setup(bot):
     bot.add_cog(OtherModCmds(bot))

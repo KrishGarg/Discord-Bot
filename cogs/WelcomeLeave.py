@@ -1,11 +1,11 @@
-import discord
 from discord.ext import commands
+
 
 class WelcomeLeave(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=['welcomechannel','welcch'])
+    @commands.command(aliases=['welcomechannel', 'welcch'])
     @commands.has_permissions(administrator=True)
     async def _welcomechannel(self, ctx):
         if self.bot._welcomemessagesenabled == False:
@@ -56,6 +56,7 @@ class WelcomeLeave(commands.Cog):
         else:
             channel = self.bot.get_channel(self.bot._welcmsgch)
             await channel.send(f"{member.mention} has left us! Hope they come back!")
+
 
 def setup(bot):
     bot.add_cog(WelcomeLeave(bot))

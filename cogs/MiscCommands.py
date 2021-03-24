@@ -1,10 +1,13 @@
+import asyncio
+import datetime
+import time
+
 import discord
 from discord.ext import commands
-import time, datetime
-import asyncio
+
 
 class MiscCommands(commands.Cog):
-    def __init__(self,bot):
+    def __init__(self, bot):
         self.bot = bot
 
     # Uptime Command
@@ -170,6 +173,7 @@ class MiscCommands(commands.Cog):
         if isinstance(error, commands.BadArgument):
             await ctx.send("Umm. Check that time you sent me again dude.")
             return
+
 
 def setup(bot):
     bot.add_cog(MiscCommands(bot))

@@ -1,7 +1,8 @@
 from discord.ext import commands
 
+
 class AdminOnly(commands.Cog):
-    def __init__(self,bot):
+    def __init__(self, bot):
         self.bot = bot
 
     # Emergency shutdown command
@@ -42,6 +43,7 @@ class AdminOnly(commands.Cog):
         if isinstance(error, commands.CommandError):
             await ctx.send("Some error occured boss!")
             return
+
 
 def setup(bot):
     bot.add_cog(AdminOnly(bot))

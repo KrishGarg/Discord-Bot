@@ -1,8 +1,9 @@
 import discord
 from discord.ext import commands
 
+
 class KickBanUnban(commands.Cog):
-    def __init__(self,bot):
+    def __init__(self, bot):
         self.bot = bot
 
     # Kick Command

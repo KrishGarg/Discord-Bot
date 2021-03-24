@@ -1,6 +1,7 @@
+import json
+
 import discord
 from discord.ext import commands
-import json
 
 with open('cogs/reports.json', encoding='utf-8') as f:
     try:
@@ -9,8 +10,9 @@ with open('cogs/reports.json', encoding='utf-8') as f:
         report = {}
         report['users'] = []
 
+
 class WarningSys(commands.Cog):
-    def __init__(self,bot):
+    def __init__(self, bot):
         self.bot = bot
 
     # Warn command
@@ -98,6 +100,7 @@ class WarningSys(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You missed some arguments looks like!")
             return
+
 
 def setup(bot):
     bot.add_cog(WarningSys(bot))

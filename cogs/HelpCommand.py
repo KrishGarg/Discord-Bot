@@ -1,8 +1,9 @@
 import discord
 from discord.ext import commands
 
+
 class HelpCommand(commands.Cog):
-    def __init__(self,bot):
+    def __init__(self, bot):
         self.bot = bot
 
     # Help Command!
@@ -78,6 +79,7 @@ class HelpCommand(commands.Cog):
         else:
             await ctx.send("Fool check the category name again!")
         return
+
 
 def setup(bot):
     bot.add_cog(HelpCommand(bot))

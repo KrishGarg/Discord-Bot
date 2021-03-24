@@ -1,16 +1,18 @@
-import discord
-from discord.ext import commands
 import asyncio
 
+import discord
+from discord.ext import commands
+
+
 class MuteUnmute(commands.Cog):
-    def __init__(self,bot):
+    def __init__(self, bot):
         self.bot = bot
 
     # Create mute role command
     @commands.command()
     @commands.has_permissions(manage_roles=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def muterole(self,ctx):
+    async def muterole(self, ctx):
         if discord.utils.get(ctx.guild.roles, name="Muted"):
             await ctx.send("Hey looks like there is already a 'Muted' role!")
             return
@@ -112,7 +114,8 @@ class MuteUnmute(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_channel_create(self, channel):
         if discord.utils.get(channel.guild.roles, name="Muted"):
-            await channel.set_permissions(discord.utils.get(channel.guild.roles, name="Muted"),send_messages = False, add_reactions = False)
+            await channel.set_permissions(discord.utils.get(channel.guild.roles, name="Muted"), send_messages=False,
+                                          add_reactions=False)
 
     @commands.command()
     @commands.has_permissions(manage_roles=True)

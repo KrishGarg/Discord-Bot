@@ -1,23 +1,24 @@
-from discord.ext import commands
 import asyncio
-import traceback
-import discord
-import inspect
-import textwrap
+import copy
 import importlib
-from contextlib import redirect_stdout
+import inspect
 import io
 import os
 import re
-import sys
-import copy
-import time
 import subprocess
+import sys
+import textwrap
+import time
+import traceback
+from contextlib import redirect_stdout
 from typing import Union, Optional
 
+import discord
+from discord.ext import commands
+
+
 # to expose to the eval command
-import datetime
-from collections import Counter
+
 
 class PerformanceMocker:
     """A mock object that can also be used in await expressions."""
@@ -62,6 +63,7 @@ class PerformanceMocker:
     def __bool__(self):
         return False
 
+
 class GlobalChannel(commands.Converter):
     async def convert(self, ctx, argument):
         try:
@@ -77,6 +79,7 @@ class GlobalChannel(commands.Converter):
                 if channel is None:
                     raise commands.BadArgument(f'Could not find a channel by ID {argument!r}.')
                 return channel
+
 
 class Admin(commands.Cog):
     """Admin-only commands that make the bot dynamic."""
@@ -349,7 +352,6 @@ class Admin(commands.Cog):
             except discord.HTTPException as e:
                 await ctx.send(f'Unexpected error: `{e}`')
 
-
     @commands.command(hidden=True)
     async def sql(self, ctx, *, query: str):
         """Run some SQL."""
@@ -419,7 +421,8 @@ class Admin(commands.Cog):
             await ctx.send(fmt)
 
     @commands.command(hidden=True)
-    async def sudo(self, ctx, channel: Optional[GlobalChannel], who: Union[discord.Member, discord.User], *, command: str):
+    async def sudo(self, ctx, channel: Optional[GlobalChannel], who: Union[discord.Member, discord.User], *,
+                   command: str):
         """Run a command as another user optionally in another channel."""
         msg = copy.copy(ctx.message)
         channel = channel or ctx.channel
@@ -494,6 +497,7 @@ class Admin(commands.Cog):
             success = True
 
         await ctx.send(f'Status: {ctx.tick(success)} Time: {(end - start) * 1000:.2f}ms')
+
 
 def setup(bot):
     bot.add_cog(Admin(bot))

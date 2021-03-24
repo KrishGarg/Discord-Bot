@@ -1,14 +1,16 @@
-import discord
-from discord.ext import commands, tasks
 import time
 # for cycling the statuses
 from itertools import cycle
 
+import discord
+from discord.ext import commands, tasks
+
 # Statuses to cycle through
 statuses = cycle(['$help ← Default', 'Sup. I said SUP!'])
 
+
 class Events(commands.Cog):
-    def __init__(self,bot):
+    def __init__(self, bot):
         self.bot = bot
 
     # To change the status of the bot every 10 seconds
