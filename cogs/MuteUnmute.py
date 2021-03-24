@@ -75,10 +75,10 @@ class MuteUnmute(commands.Cog):
     @commands.command()
     @commands.has_permissions(manage_roles=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def mute(self, ctx, user: discord.Member = None, *, reason=None):
+    async def mute(self, ctx, user: discord.Member = None):
         if not discord.utils.get(ctx.guild.roles, name="Muted"):
             await ctx.send(
-                f"Looks like there is no 'Muted' role! To make me create one, send `{self.bot.comamand_prefix}muterole` and I will create one for you!"
+                f"Looks like there is no 'Muted' role! To make me create one, send `{self.bot.command_prefix}muterole` and I will create one for you!"
             )
             return
 
@@ -91,6 +91,16 @@ class MuteUnmute(commands.Cog):
         await ctx.send(f'''
       {user.mention} has been muted by {ctx.author.mention}!
         ''')
+
+        try:
+            dmemb = discord.Embed(title="You were MUTED!", color=0x00ff00, description=f'''
+You were muted in **{ctx.guild.name}** by {ctx.author.mention}!
+You will stay muted till a moderator unmutes you!        
+                ''')
+            muteddm = await user.create_dm()
+            await muteddm.send(embed=dmemb)
+        except:
+            pass
 
     @mute.error
     async def mute_error(self, ctx, error):
@@ -125,6 +135,14 @@ class MuteUnmute(commands.Cog):
             await user.remove_roles(
                 discord.utils.get(ctx.guild.roles, name="Muted"))
             await ctx.send(f"Unmuted {user.mention}!")
+            try:
+                dmemb = discord.Embed(title="You were UNMUTED!", color=0x00ff00, description=f'''
+            You were unmuted in **{ctx.guild.name}** by {ctx.author.mention}!   
+                            ''')
+                muteddm = await user.create_dm()
+                await muteddm.send(embed=dmemb)
+            except:
+                pass
             return
         else:
             await ctx.send("There was an error while unmuting that user!")
@@ -146,6 +164,102 @@ class MuteUnmute(commands.Cog):
 
         if isinstance(error, commands.CommandError):
             await ctx.send("Some error occured! Try again later!")
+            return
+
+    # TempMute command
+    @commands.command()
+    @commands.has_permissions(manage_roles=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def tempmute(self, ctx, user: discord.Member, mutetime):
+        if not discord.utils.get(ctx.guild.roles, name="Muted"):
+            await ctx.send(
+                f"Looks like there is no 'Muted' role! To make me create one, send `{self.bot.command_prefix}muterole` and I will create one for you!"
+            )
+            print("test")
+            return
+
+        if int(mutetime[:-1]) < 1:
+            await ctx.send("Looks like the time to mute is too less. Try again!")
+            return
+
+        if not discord.utils.get(ctx.guild.roles, name="Muted") in user.roles:
+            await user.add_roles(discord.utils.get(ctx.guild.roles, name="Muted"))
+        else:
+            await ctx.send("He is already muted!")
+            return
+
+        if str(mutetime).endswith('s'):
+            timeinsec = int(str(mutetime[:-1]))
+            if mutetime[:-1] == 1:
+                tester = 'second'
+            else:
+                tester = 'seconds'
+
+        elif str(mutetime).endswith('m'):
+            timeinsec = int(str(mutetime[:-1])) * 60
+            if int(mutetime[:-1]) == 1:
+                tester = 'minute'
+            else:
+                tester = 'minutes'
+
+        elif str(mutetime).endswith('h'):
+            timeinsec = int(str(mutetime[:-1])) * 60 * 60
+            if int(mutetime[:-1]) == 1:
+                tester = 'hour'
+            else:
+                tester = 'hours'
+
+        elif str(mutetime).endswith('d'):
+            timeinsec = int(str(mutetime[:-1])) * 60 * 60 * 24
+            if int(mutetime[:-1]) == 1:
+                tester = 'day'
+            else:
+                tester = 'days'
+
+        elif str(mutetime).endswith('w'):
+            timeinsec = int(str(mutetime[:-1])) * 60 * 60 * 24 * 7
+            if int(mutetime[:-1]) == 1:
+                tester = 'week'
+            else:
+                tester = 'weeks'
+
+        else:
+            await ctx.send("Check the time you sent me again!!")
+            return
+
+        timemsg = f'{mutetime[:-1]} {tester}'
+
+        await ctx.send(f'''
+      {user.mention} has been muted by {ctx.author.mention} for {timemsg}!
+        ''')
+
+        try:
+            dmemb = discord.Embed(title="You were MUTED!", color=0x00ff00,description=f'''
+    You were temporarily muted in **{ctx.guild.name}** by {ctx.author.mention} for {timemsg}!
+            ''')
+            muteddm = await user.create_dm()
+            await muteddm.send(embed= dmemb)
+        except:
+            pass
+
+        await asyncio.sleep(timeinsec)
+        try:
+            await user.remove_roles(discord.utils.get(ctx.guild.roles, name="Muted"))
+        except:
+            pass
+
+    @tempmute.error
+    async def tempmute_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Looks like you don't have enough permission to mute a person!")
+            return
+
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Looks like you missed some arguments there buddy!!")
+            return
+
+        if isinstance(error, commands.BadArgument):
+            await ctx.send("Looks like you gotta check the arguments you send me again!")
             return
 
 
