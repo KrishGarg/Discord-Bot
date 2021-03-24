@@ -136,15 +136,29 @@ class MiscCommands(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def timer(self, ctx, time: int):
-        timeinsec = time
-        if time > 200:
-            await ctx.send("Wanna break me?! Limit is 200 seconds!!")
+    async def timer(self, ctx, time):
+        if str(time).endswith('s'):
+            timeinsec = int(str(time[:-1]))
+        elif str(time).endswith('m'):
+            timeinsec = int(str(time[:-1])) * 60
+        elif str(time).endswith('h'):
+            timeinsec = int(str(time[:-1])) * 60 * 60
+        elif str(time).endswith('d'):
+            timeinsec = int(str(time[:-1])) * 60 * 60 * 24
+        elif str(time).endswith('w'):
+            timeinsec = int(str(time[:-1])) * 60 * 60 * 24 * 7
+        else:
+            await ctx.send("Check the values you sent me again!")
             return
-        themsg = await ctx.send(f"{time}s..")
-        for i in range(time):
+
+        if timeinsec > 604800:
+            await ctx.send("Wanna break me?! Limit is 1 week!!")
+            return
+        themsg = await ctx.send(f"{timeinsec}s..")
+        for i in range(timeinsec):
             timeinsec -= 1
-            await themsg.edit(content=f"{timeinsec}s..")
+            if timeinsec % 5 == 0:
+                await themsg.edit(content=f"{timeinsec}s..")
             await asyncio.sleep(1)
         await ctx.send(f'{ctx.author.mention}, Timer is Up!')
 
