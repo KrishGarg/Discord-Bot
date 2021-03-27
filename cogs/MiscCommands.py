@@ -89,7 +89,7 @@ class MiscCommands(commands.Cog):
                 the_user = ctx.message.author
 
             else:
-                the_user = await bot.fetch_user(int(a))
+                the_user = await self.bot.fetch_user(int(a))
 
             url = str(the_user.avatar_url)
             png = url
@@ -125,10 +125,6 @@ class MiscCommands(commands.Cog):
             await ctx.send("You check the arguments!")
             return
 
-        if isinstance(error, commands.CommandError):
-            await ctx.send("Some error occured! Try again later!")
-            return
-
     # Ping/Latency Command!
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -139,3 +135,4 @@ class MiscCommands(commands.Cog):
 
 def setup(bot):
     bot.add_cog(MiscCommands(bot))
+
