@@ -21,7 +21,7 @@ class WarningSys(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def warn(self, ctx, user: discord.Member, *reason: str):
 
-        if ctx.author.top_role.position < user.top_role.position:
+        if ctx.author.top_role.position <= user.top_role.position:
             await ctx.send("Lol you have warn perms but you are not as powerful as the guy you are trying to warn!")
             return
 

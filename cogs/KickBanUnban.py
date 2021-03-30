@@ -12,7 +12,7 @@ class KickBanUnban(commands.Cog):
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def kick(self, ctx, user: discord.Member, reason1="None Given"):
 
-        if ctx.author.top_role.position < user.top_role.position:
+        if ctx.author.top_role.position <= user.top_role.position:
             await ctx.send("Lol you have kick perms but you are not as powerful as the guy you are trying to kick!")
             return
 
@@ -56,7 +56,7 @@ class KickBanUnban(commands.Cog):
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def ban(self, ctx, user: discord.Member, *, reason1="None Given"):
 
-        if ctx.author.top_role.position < user.top_role.position:
+        if ctx.author.top_role.position <= user.top_role.position:
             await ctx.send("Lol you have ban perms but you are not as powerful as the guy you are trying to ban!")
             return
 

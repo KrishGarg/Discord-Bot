@@ -77,7 +77,7 @@ class MuteUnmute(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def mute(self, ctx, user: discord.Member = None):
 
-        if ctx.author.top_role.position < user.top_role.position:
+        if ctx.author.top_role.position <= user.top_role.position:
             await ctx.send("Lol you have mute perms but you are not as powerful as the guy you are trying to mute!")
             return
 
@@ -137,7 +137,7 @@ You will stay muted till a moderator unmutes you!
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def unmute(self, ctx, user: discord.Member):
 
-        if ctx.author.top_role.position < user.top_role.position:
+        if ctx.author.top_role.position <= user.top_role.position:
             await ctx.send("Lol you have unmute perms but you are not as powerful as the guy you are trying to unmute!")
             return
 
@@ -182,7 +182,7 @@ You will stay muted till a moderator unmutes you!
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def tempmute(self, ctx, user: discord.Member, mutetime):
 
-        if ctx.author.top_role.position < user.top_role.position:
+        if ctx.author.top_role.position <= user.top_role.position:
             await ctx.send("Lol you have temp mute perms but you are not as powerful as the guy you are trying to temp mute!")
             return
 
