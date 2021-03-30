@@ -1,17 +1,9 @@
 import asyncio
-import copy
-import importlib
-import inspect
 import io
-import os
-import re
 import subprocess
-import sys
 import textwrap
-import time
 import traceback
 from contextlib import redirect_stdout
-from typing import Union, Optional
 
 import discord
 from discord.ext import commands
