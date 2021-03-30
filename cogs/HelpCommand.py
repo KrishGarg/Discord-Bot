@@ -27,13 +27,11 @@ class HelpCommand(commands.Cog):
                                  icon_url=ctx.message.author.avatar_url)
             the_embed.set_footer(
                 text="OwO",
-                icon_url=
-                "https://cdn.discordapp.com/avatars/810187428086022254/dcc43fae4bc05ec1db81c516ded44224.png?size=1024"
-            )
+                icon_url=self.bot.user.avatar_url)
             await ctx.message.channel.send(embed=the_embed)
             return
 
-        elif cmd.lower() == "moderation":
+        elif cmd.lower() in ["moderation",'mod']:
             modhelp = '''
     **{0}prefix [new prefix] :** `Administrator`^. To change prefix (Type 'reset' in place of [new prefix] to reset to default prefix '$')
 
@@ -70,9 +68,7 @@ class HelpCommand(commands.Cog):
                                  icon_url=ctx.message.author.avatar_url)
             the_embed.set_footer(
                 text="OwO",
-                icon_url=
-                "https://cdn.discordapp.com/avatars/810187428086022254/dcc43fae4bc05ec1db81c516ded44224.png?size=1024"
-            )
+                icon_url=self.bot.user.avatar_url)
 
             await ctx.send(embed=the_embed)
             return
