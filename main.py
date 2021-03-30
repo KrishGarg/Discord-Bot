@@ -1,15 +1,14 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # The discord module
 import discord
 # Gets the commands and tasks module from the discord module
 from discord.ext import commands
 
-with open('token.txt', encoding='utf-8') as t:
-    token = t.readlines()[0]
-
 intents = discord.Intents.all()
-
 # Initializing the bot
 bot = commands.Bot(command_prefix="$", help_command=None, intents=intents)
 
@@ -30,4 +29,4 @@ if __name__ == '__main__':
             print(f"Loaded {filename[:-3]}")
 
 # Runs the bot on my token.
-bot.run(token)
+bot.run(os.getenv('TOKEN'))
