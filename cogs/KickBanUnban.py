@@ -11,6 +11,11 @@ class KickBanUnban(commands.Cog):
     @commands.has_permissions(kick_members=True)
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def kick(self, ctx, user: discord.Member, reason1="None Given"):
+
+        if ctx.author.top_role.position < user.top_role.position:
+            await ctx.send("Lol you have kick perms but you are not as powerful as the guy you are trying to kick!")
+            return
+
         usersdm = await user.create_dm()
         dm_embed = discord.Embed(title="YOU HAVE BEEN KICKED!",
                                  description=f'''
@@ -50,6 +55,11 @@ class KickBanUnban(commands.Cog):
     @commands.has_permissions(ban_members=True)
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def ban(self, ctx, user: discord.Member, *, reason1="None Given"):
+
+        if ctx.author.top_role.position < user.top_role.position:
+            await ctx.send("Lol you have ban perms but you are not as powerful as the guy you are trying to ban!")
+            return
+
         usersdm = await user.create_dm()
         dm_embed = discord.Embed(title="YOU HAVE BEEN BANNED!",
                                  description=f'''

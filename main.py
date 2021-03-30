@@ -23,10 +23,11 @@ bot._welcmsgch = 0
 bot._leavemessagesenabled = False
 bot._leavemsgch = 0
 
-for filename in os.listdir('./cogs'):
-    if filename.endswith('.py'):
-        bot.load_extension(f'cogs.{filename[:-3]}')
-        print(f"Loaded {filename[:-3]}")
+if __name__ == '__main__':
+    for filename in os.listdir('./cogs'):
+        if filename.endswith('.py'):
+            bot.load_extension(f'cogs.{filename[:-3]}')
+            print(f"Loaded {filename[:-3]}")
 
 # Runs the bot on my token.
 bot.run(token)
