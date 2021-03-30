@@ -134,6 +134,7 @@ class MiscCommands(commands.Cog):
         await ctx.send(f":ping_pong: Pong! Latency is {ping}ms!")
         return
 
+    # Joke Command
     @commands.command()
     @commands.cooldown(1, 20, commands.BucketType.user)
     async def joke(self, ctx):
@@ -147,6 +148,25 @@ class MiscCommands(commands.Cog):
 ||**{joke['punchline']}**||
 ''')
 
+    # Backup Joke Command
+    @commands.command()
+    @commands.cooldown(1, 20, commands.BucketType.user)
+    async def joke2(self, ctx):
+        try:
+            joke = requests.get('https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,racist,sexist,explicit').json()
+        except HTTPError:
+            await ctx.send("There was some issue with our Joke API! Please try again later!!")
+        else:
+            if joke['type'] == 'twopart':
+                await ctx.send(f'''
+**{joke['setup']}**
+||**{joke['delivery']}**||
+        ''')
+                return
+
+            else:
+                await ctx.send(f"**{joke['joke']}**")
+                return
 
 def setup(bot):
     bot.add_cog(MiscCommands(bot))
