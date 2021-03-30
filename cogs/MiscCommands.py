@@ -1,6 +1,7 @@
 import datetime
 import time
-
+import requests
+from requests.exceptions import HTTPError
 import discord
 from discord.ext import commands
 
@@ -131,6 +132,20 @@ class MiscCommands(commands.Cog):
     async def ping(self, ctx):
         ping = round(self.bot.latency * 1000)
         await ctx.send(f":ping_pong: Pong! Latency is {ping}ms!")
+        return
+
+    @commands.command()
+    @commands.cooldown(1, 20, commands.BucketType.user)
+    async def joke(self, ctx):
+        try:
+            joke = requests.get('https://official-joke-api.appspot.com/random_joke').json()
+        except HTTPError:
+            await ctx.send("There was some issue with our Joke API! Please try again later!!")
+        else:
+            await ctx.send(f'''
+**{joke['setup']}**
+||**{joke['punchline']}**||
+''')
 
 
 def setup(bot):
