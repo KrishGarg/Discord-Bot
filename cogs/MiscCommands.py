@@ -142,6 +142,7 @@ class MiscCommands(commands.Cog):
             joke = requests.get('https://official-joke-api.appspot.com/random_joke').json()
         except HTTPError:
             await ctx.send("There was some issue with our Joke API! Please try again later!!")
+            return
         else:
             await ctx.send(f'''
 **{joke['setup']}**
@@ -156,6 +157,7 @@ class MiscCommands(commands.Cog):
             joke = requests.get('https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,racist,sexist,explicit').json()
         except HTTPError:
             await ctx.send("There was some issue with our Joke API! Please try again later!!")
+            return
         else:
             if joke['type'] == 'twopart':
                 await ctx.send(f'''
@@ -167,6 +169,24 @@ class MiscCommands(commands.Cog):
             else:
                 await ctx.send(f"**{joke['joke']}**")
                 return
+
+    # Quote Command
+    @commands.command()
+    @commands.cooldown(1, 20, commands.BucketType.user)
+    async def quote(self, ctx):
+        try:
+            try:
+                quote = requests.get('http://api.quotable.io/random').json()
+            except HTTPError:
+                await ctx.send("There was some issue with our Quote API! Please try again later!!")
+                return
+            else:
+                await ctx.send(f'''
+    *{quote["content"]}*  - **{quote["author"]}**
+                ''')
+        except Exception as ex:
+            print(ex)
+
 
 def setup(bot):
     bot.add_cog(MiscCommands(bot))
