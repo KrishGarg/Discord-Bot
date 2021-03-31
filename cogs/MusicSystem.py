@@ -101,16 +101,15 @@ class MusicSystem(commands.Cog):
             await ctx.send(f"Skipped {data[0].name}")
             return
 
-    # Some issue with this command, will be fixed later.
-    # @commands.command()
-    # async def volume(self, ctx, vol):
-    #     try:
-    #         player = music.get_player(guild_id=ctx.guild.id)
-    #         song, volume = await player.change_volume(float(vol / 100))  # volume should be a float between 0 to 1
-    #         await ctx.send(f"Changed volume for {song.name} to {volume * 100}%")
-    #         return
-    #     except Exception as ex:
-    #         print(ex)
+    @commands.command()
+    async def volume(self, ctx, vol):
+        try:
+            player = music.get_player(guild_id=ctx.guild.id)
+            song, volume = await player.change_volume(float(vol) / 100.0)  # volume should be a float between 0 to 1
+            await ctx.send(f"Changed volume for {song.name} to {volume * 100}%")
+            return
+        except Exception as ex:
+            print(ex)
 
     @commands.command()
     async def remove(self, ctx, index):
