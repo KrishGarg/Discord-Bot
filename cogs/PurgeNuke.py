@@ -58,24 +58,30 @@ class PurgeNuke(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def nuke(self, ctx, errorHandling=None):
         if errorHandling is None:
-            await ctx.send(
-                "Send me a conformation by sending `Yes`. You have 10 seconds!")
+            await ctx.reply(
+                "Send me a conformation by sending `Yes`. You have 10 seconds! You can cancel this sending `No` or `Cancel`")
 
             def check(m):
-                return m.author == ctx.author and m.content.lower() == "yes"
+                return m.author == ctx.author and m.content.lower() in ['yes','no','cancel']
 
             try:
-                await self.bot.wait_for('message', check=check, timeout=10.0)
+                x = await self.bot.wait_for('message', check=check, timeout=10.0)
             except asyncio.TimeoutError:
                 await ctx.send(
                     "I cancelled it because I didn't get any confirmation!")
                 return
 
-            old_channel = ctx.channel
-            new_channel = await old_channel.clone(reason="Has been NUKED!")
-            await old_channel.delete()
-            await new_channel.send("**NUKED!**")
-            await new_channel.send("https://imgur.com/LIyGeCR")
+            if x.content.lower() == "yes":
+                old_channel = ctx.channel
+                new_channel = await old_channel.clone(reason="Has been NUKED!")
+                await old_channel.delete()
+                await new_channel.send("**NUKED!**")
+                await new_channel.send("https://imgur.com/LIyGeCR")
+                return
+
+            else:
+                await ctx.send("Noob! Always think before running these types of commands!!")
+                return
 
         else:
             raise commands.CommandError()
@@ -88,7 +94,7 @@ class PurgeNuke(commands.Cog):
             return
 
         if isinstance(error, commands.CommandError):
-            await ctx.send("Something went wrong! Try again later!")
+            await ctx.send("Something went wrong! Did you gave more than required arguments?!")
 
 
 def setup(bot):
