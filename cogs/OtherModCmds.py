@@ -15,7 +15,7 @@ class OtherModCmds(commands.Cog):
     async def findmessage(self, ctx, id1: int):
         try:
             the_msg = await ctx.channel.fetch_message(id1)
-            await the_msg.reply(content="Gotcha!")
+            await the_msg.reply(content="Gotcha!",mention_author=False)
         except:
             raise commands.BadArgument()
 
