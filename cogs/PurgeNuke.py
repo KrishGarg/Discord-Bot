@@ -59,13 +59,10 @@ class PurgeNuke(commands.Cog):
     async def nuke(self, ctx, errorHandling=None):
         if errorHandling is None:
             await ctx.reply(
-                "Send me a conformation by sending `Yes`. You have 10 seconds! You can cancel this sending `No` or `Cancel`")
-
-            def check(m):
-                return m.author == ctx.author and m.content.lower() in ['yes','no','cancel']
+                "Send me a conformation by sending `Yes`. You have 10 seconds!")
 
             try:
-                x = await self.bot.wait_for('message', check=check, timeout=10.0)
+                x = await self.bot.wait_for('message', check=lambda m: m.author == ctx.author, timeout=10.0)
             except asyncio.TimeoutError:
                 await ctx.send(
                     "I cancelled it because I didn't get any confirmation!")
