@@ -40,6 +40,8 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
         try:
+            if (before.pinned and not after.pinned) or (not before.pinned and after.pinned):
+                return
             await self.bot.process_commands(after)
         except:
             pass
