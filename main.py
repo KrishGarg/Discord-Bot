@@ -17,7 +17,7 @@ from discord.ext import commands
 
 intents = discord.Intents.all()
 # Initializing the bot
-bot = commands.Bot(command_prefix="$", help_command=None, intents=intents)
+bot = commands.Bot(command_prefix="$", help_command=None, intents=intents, case_insensitive=True)
 
 # Bot owner
 bot.owner_id = 453875226757955585
