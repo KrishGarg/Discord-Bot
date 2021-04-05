@@ -1,5 +1,6 @@
+import discord
 from discord.ext import commands
-import os, sys
+import os
 
 class AdminOnly(commands.Cog):
     def __init__(self, bot):
@@ -54,6 +55,32 @@ class AdminOnly(commands.Cog):
                 print(f"Reloaded {filename[:-3]}")
 
         await x.edit(content="Reloaded!")
+        return
+
+    @commands.command()
+    @commands.is_owner()
+    async def ghostspammer(self, ctx, count: int, *, text: str):
+        await ctx.message.delete()
+        for i in range(count):
+            x = await ctx.send(text)
+            await x.delete()
+        return
+
+    @commands.command()
+    @commands.is_owner()
+    async def ghostdmspammer(self, ctx, user: discord.Member,count: int, *, text: str):
+        await ctx.message.delete()
+        dm = await user.create_dm()
+        try:
+            for i in range(count):
+                y = await dm.send(text)
+                await y.delete()
+
+            await ctx.send(f'{ctx.author.mention}, done the work xd.',delete_after=10)
+
+        except:
+            await ctx.send("I think they have their dms closed!")
+            return
         return
 
 def setup(bot):
