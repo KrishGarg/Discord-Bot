@@ -1,5 +1,5 @@
 from discord.ext import commands
-
+import os, sys
 
 class AdminOnly(commands.Cog):
     def __init__(self, bot):
@@ -21,7 +21,6 @@ class AdminOnly(commands.Cog):
     # Spam command!
     @commands.command()
     @commands.is_owner()
-    @commands.cooldown(1, 5, commands.BucketType.user)
     async def spam(self, ctx, count: int, *, text: str):
         await ctx.message.delete()
         for i in range(count):
@@ -44,6 +43,18 @@ class AdminOnly(commands.Cog):
             await ctx.send("Some error occured boss!")
             return
 
+    @commands.command()
+    @commands.is_owner()
+    async def reloadall(self, ctx):
+        x = await ctx.send("Reloading all cogs...")
+
+        for filename in os.listdir('./cogs'):
+            if filename.endswith('.py'):
+                self.bot.reload_extension(f'cogs.{filename[:-3]}')
+                print(f"Reloaded {filename[:-3]}")
+
+        await x.edit(content="Reloaded!")
+        return
 
 def setup(bot):
     bot.add_cog(AdminOnly(bot))
