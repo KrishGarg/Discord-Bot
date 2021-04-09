@@ -48,15 +48,19 @@ class WarningSys(commands.Cog):
                 f"Warned Them! To check their warnings, use the `{self.bot.command_prefix}warnings` command."
             )
 
-            warnydm = await user.create_dm()
-            embe = discord.Embed(title="YOU HAVE BEEN WARNED!",
-                                 color=0x00ff00,
-                                 description=f'''
-    You have been warned in **{ctx.guild.name}**!
-    Reason Given: {reason}
-    Warned By: {ctx.author.mention}
-            ''')
-            await warnydm.send(embed=embe)
+            try:
+                warnydm = await user.create_dm()
+                embe = discord.Embed(title="YOU HAVE BEEN WARNED!",
+                                     color=0x00ff00,
+                                     description=f'''
+        You have been warned in **{ctx.guild.name}**!
+        Reason Given: {reason}
+        Warned By: {ctx.author.mention}
+                ''')
+                await warnydm.send(embed=embe)
+            except discord.Forbidden:
+                await ctx.send("By the way, their DMs are closed/ I can't send a DM to them so they might not know that they have been warned!")
+
         except:
             raise commands.CommandError()
 
