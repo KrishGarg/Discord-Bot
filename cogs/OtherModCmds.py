@@ -3,6 +3,8 @@ from time import sleep
 import discord
 from discord.ext import commands
 
+import shutil
+import requests
 
 class OtherModCmds(commands.Cog):
     def __init__(self, bot):
@@ -142,14 +144,14 @@ class OtherModCmds(commands.Cog):
     # Say command
     @commands.command()
     @commands.has_permissions(administrator=True)
-    @commands.cooldown(1, 30, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def say(self, ctx, *, text: str):
         x = text
         if "{@}" in text:
             x = text.replace("{@}", "@")
         await ctx.send(x)
         await ctx.message.delete()
-
+        return
 
 def setup(bot):
     bot.add_cog(OtherModCmds(bot))
