@@ -1,15 +1,20 @@
-import json
-
 import discord
 from discord.ext import commands
 
-with open('cogs/reports.json', encoding='utf-8') as f:
-    try:
-        report = json.load(f)
-    except ValueError:
-        report = {}
-        report['users'] = []
+import sqlite3
 
+db = sqlite3.connect('main.db')
+c = db.cursor()
+
+c.execute("""
+        CREATE TABLE IF NOT EXISTS warnings (
+            user_id INTEGER,
+            reason TEXT,
+            guild_id INTEGER
+        )""")
+
+db.commit()
+db.close()
 
 class WarningSys(commands.Cog):
     def __init__(self, bot):
@@ -30,22 +35,19 @@ class WarningSys(commands.Cog):
                 await ctx.send("Please provide a reason")
                 return
             reason = ' '.join(reason)
-            for current_user in report['users']:
-                if current_user['name'] == user.name:
-                    current_user['reasons'].append(reason)
-                    break
-            else:
-                report['users'].append({
-                    'name': user.name,
-                    'reasons': [
-                        reason,
-                    ]
-                })
-            with open('cogs/reports.json', 'w+') as f:
-                json.dump(report, f)
+
+            db = sqlite3.connect('main.db')
+            c = db.cursor()
+
+            c.execute("INSERT INTO warnings (user_id,reason,guild_id) VALUES (?,?,?)", (user.id, reason, ctx.guild.id))
+
+            db.commit()
+            db.close()
+
             await ctx.send(
                 f"Warned Them! To check their warnings, use the `{self.bot.command_prefix}warnings` command."
             )
+
             warnydm = await user.create_dm()
             embe = discord.Embed(title="YOU HAVE BEEN WARNED!",
                                  color=0x00ff00,
@@ -83,21 +85,30 @@ class WarningSys(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def warnings(self, ctx, user: discord.User):
-        for current_user in report['users']:
-            if user.name == current_user['name']:
-                emb = discord.Embed(title=f"Warnings of {user.name}",
-                                    color=0x00ff00,
-                                    description=f'''
-    **Number of Times Warned: ** {len(current_user['reasons'])}
-    **Warning Reasons: ** 
-    {"""
+        db = sqlite3.connect('main.db')
+        c = db.cursor()
 
-    """.join(current_user['reasons'])}
-          ''')
-                await ctx.send(embed=emb)
-                break
-        else:
+        c.execute("SELECT * FROM warnings WHERE user_id = ? AND guild_id = ?", (user.id, ctx.guild.id))
+        user_reports = c.fetchall()
+
+        db.close()
+
+        if not user_reports:
             await ctx.send(f"{user.name} has never been reported!")
+            return
+
+        else:
+            reasons = [x[1] for x in user_reports]
+            reasonstr = "\n\n".join(reasons)
+
+            emb = discord.Embed(title=f"Warnings of {user.name}",
+                                color=0x00ff00,
+                                description=f'''
+                **Number of Times Warned: ** {len(user_reports)}
+                **Warning Reasons: **
+                {reasonstr}
+                      ''')
+            await ctx.send(embed=emb)
 
     # Warning command error handling
     @warnings.error
