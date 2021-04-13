@@ -1,7 +1,7 @@
 import asyncio
 
+import discord
 from discord.ext import commands
-
 
 class PurgeNuke(commands.Cog):
     def __init__(self, bot):
@@ -11,9 +11,17 @@ class PurgeNuke(commands.Cog):
     @commands.command()
     @commands.has_permissions(manage_messages=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def purge(self, ctx, num: int):
+    async def purge(self, ctx, num: int, user: discord.Member = None):
+
+        if user:
+            check_func = lambda m: m.author == user and not m.pinned
+
+        else:
+            check_func = lambda m: not m.pinned
+
         if 0 < num < 100:
-            await ctx.channel.purge(limit=num + 1, bulk=True)
+            await ctx.channel.purge(limit=num + 1, bulk=True, check=check_func)
+            await ctx.send("Purged! If there were any pinned messages, they would have been ignored!", delete_after=3)
             return
 
         elif num > 100:

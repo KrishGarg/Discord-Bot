@@ -24,7 +24,7 @@ class ReactionRole(commands.Cog):
     @commands.command(aliases=['rr', 'reactrole'])
     @commands.has_permissions(manage_roles=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def _reactrole(self, ctx, emoji: discord.Emoji, role: discord.Role, messageid):
+    async def _reactrole(self, ctx, emoji, role: discord.Role, messageid):
         msg = await ctx.channel.fetch_message(messageid)
         await msg.add_reaction(emoji)
         db = sqlite3.connect('main.db')
