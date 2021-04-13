@@ -21,6 +21,8 @@ class PurgeNuke(commands.Cog):
 
         if 0 < num < 100:
             await ctx.channel.purge(limit=num + 1, bulk=True, check=check_func)
+            if user:
+                await ctx.message.delete()
             await ctx.send("Purged! If there were any pinned messages, they would have been ignored!", delete_after=3)
             return
 
