@@ -82,7 +82,7 @@ class PurgeNuke(commands.Cog):
                 old_channel = ctx.channel
                 new_channel = await old_channel.clone(reason="Has been NUKED!")
                 await old_channel.delete()
-                await new_channel.send("**NUKED!**")
+                await new_channel.send(f"**NUKED! -By {ctx.author.mention}**")
                 await new_channel.send("https://imgur.com/LIyGeCR")
                 return
 
