@@ -82,8 +82,9 @@ class PurgeNuke(commands.Cog):
                 old_channel = ctx.channel
                 new_channel = await old_channel.clone(reason="Has been NUKED!")
                 await old_channel.delete()
-                await new_channel.send(f"**NUKED! -By {ctx.author.mention}**")
-                await new_channel.send("https://imgur.com/LIyGeCR")
+                embed1 = discord.Embed(title="NUKED!",description=f'**This channel was nuked by {ctx.author.mention}.**',color=0x00ff00)
+                embed1.set_image(url="https://media2.giphy.com/media/HhTXt43pk1I1W/giphy.gif?cid=ecf05e47l2gij7b6xv29vavlho3z6mxdi8bdm3o626p2pfcb&rid=giphy.gif&ct=g")
+                await new_channel.send(embed=embed1)
                 return
 
             else:
