@@ -1,10 +1,7 @@
 from time import sleep
-
 import discord
 from discord.ext import commands
 
-import shutil
-import requests
 
 class OtherModCmds(commands.Cog):
     def __init__(self, bot):
@@ -140,6 +137,19 @@ class OtherModCmds(commands.Cog):
         if isinstance(error, commands.BadArgument):
             await ctx.send("You check the ID again!")
             return
+
+    @commands.command()
+    @commands.has_permissions(manage_messages=True)
+    @commands.cooldown(1, 3, commands.BucketType.user)
+    async def timediff(self, ctx, id1: int, id2: int):
+        datetime1 = discord.utils.snowflake_time(id1)
+        datetime2 = discord.utils.snowflake_time(id2)
+        if datetime1 > datetime2:
+            time1,time2 = datetime1,datetime2
+        else:
+            time1,time2 = datetime2,datetime1
+        difference = (time1-time2)
+        await ctx.send(f'Hours: {difference.seconds//3600}\nMinutes: {(difference.seconds//60)%60}\nSeconds: {difference.seconds}\nMicroseconds: {difference.microseconds}')
 
     # Say command
     @commands.command()
