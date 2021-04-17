@@ -10,7 +10,7 @@ load_dotenv()
 # Logging
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+handler = logging.FileHandler(filename='../discord.log', encoding='utf-8', mode='w')
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
@@ -29,7 +29,7 @@ bot._leavemessagesenabled = False
 bot._leavemsgch = 0
 
 if __name__ == '__main__':
-    for filename in os.listdir('./cogs'):
+    for filename in os.listdir('cogs'):
         if filename.endswith('.py'):
             bot.load_extension(f'cogs.{filename[:-3]}')
             print(f"Loaded {filename[:-3]}")
