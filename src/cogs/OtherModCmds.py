@@ -1,11 +1,14 @@
 from time import sleep
 import discord
 from discord.ext import commands
-
+import typing
+from io import BytesIO
+import aiohttp
 
 class OtherModCmds(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.ses = bot.ses
 
     # Find Message Command
     @commands.command()
@@ -162,6 +165,31 @@ class OtherModCmds(commands.Cog):
         await ctx.send(x)
         await ctx.message.delete()
         return
+
+    @commands.command()
+    @commands.has_permissions(manage_roles=True)
+    async def steal(self, ctx, name: str, arg: typing.Union[discord.PartialEmoji, str]):
+        if isinstance(arg, discord.PartialEmoji):
+            url = str(arg.url)
+        else:
+            url = arg
+
+        async with self.ses.get(url) as r:
+            try:
+                if r.status in range(200, 299):
+                    img = BytesIO(await r.read())
+                    bytes = img.getvalue()
+                    emoji = await ctx.guild.create_custom_emoji(image=bytes, name=name)
+                    await ctx.send("Successfully created the emoji.")
+                    await ctx.send(str(emoji))
+                else:
+                    ctx.send(f"Some error happened when trying to get the image from the url. Response: {r.status}")
+            except discord.HTTPException:
+                await ctx.send("An error occurred. Common causes: File size too large, un-allowed characters in emoji name, 50 emoji limit.")
+
+    @steal.error
+    async def steal_error(self, ctx, error):
+        print(error)
 
 def setup(bot):
     bot.add_cog(OtherModCmds(bot))

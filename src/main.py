@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import discord
 from discord.ext import commands
 import logging
+import aiohttp
 
 # Loading the .env file to use the token
 load_dotenv()
@@ -18,10 +19,12 @@ logger.addHandler(handler)
 # Initializing the bot
 bot = commands.Bot(command_prefix="$", help_command=None, intents=discord.Intents.all(), case_insensitive=True)
 
+bot.ses = aiohttp.ClientSession()
+
 # Bot owner
 bot.owner_id = 453875226757955585
 
-# Using bot object to transfer data through cogs
+# Using bot object to transfer data through cogs. Soon will be gone.
 bot._start_time = ''
 bot._welcomemessagesenabled = False
 bot._welcmsgch = 0
@@ -29,7 +32,7 @@ bot._leavemessagesenabled = False
 bot._leavemsgch = 0
 
 if __name__ == '__main__':
-    for filename in os.listdir('cogs'):
+    for filename in os.listdir('./src/cogs'):
         if filename.endswith('.py'):
             bot.load_extension(f'cogs.{filename[:-3]}')
             print(f"Loaded {filename[:-3]}")
