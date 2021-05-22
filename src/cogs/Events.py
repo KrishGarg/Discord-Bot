@@ -26,6 +26,11 @@ class Events(commands.Cog):
         start_time = time.time()
         self.bot._start_time = start_time
 
+        # Sends pings whenever it is rebooted.
+        guild = self.bot.get_guild(770760891394031646)
+        channel = guild.get_channel(844978173103439872)
+        await channel.send("I was rebooted.")
+
     # To make the bot tell his prefix when pinged/mentioned
     @commands.Cog.listener()
     async def on_message(self, message):

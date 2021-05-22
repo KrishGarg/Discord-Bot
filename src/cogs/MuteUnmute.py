@@ -190,7 +190,6 @@ You will stay muted till a moderator unmutes you!
             await ctx.send(
                 f"Looks like there is no 'Muted' role! To make me create one, send `{self.bot.command_prefix}muterole` and I will create one for you!"
             )
-            print("test")
             return
 
         if int(mutetime[:-1]) < 1:

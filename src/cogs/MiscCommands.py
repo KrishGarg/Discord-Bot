@@ -15,8 +15,6 @@ class MiscCommands(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def uptime(self, ctx):
         current_time = time.time()
-        print(current_time)
-        print(self.bot._start_time)
         difference = int(round(current_time - self.bot._start_time))
         text = str(datetime.timedelta(seconds=difference))
         embed = discord.Embed(colour=0x00ff00)

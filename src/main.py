@@ -19,10 +19,8 @@ logger.addHandler(handler)
 # Initializing the bot
 bot = commands.Bot(command_prefix="$", help_command=None, intents=discord.Intents.all(), case_insensitive=True)
 
-bot.ses = aiohttp.ClientSession()
-
-# Bot owner
-bot.owner_id = 453875226757955585
+# Bot owners
+bot.owner_ids = {453875226757955585, 506093256501755904}
 
 # Using bot object to transfer data through cogs. Soon will be gone.
 bot._start_time = ''
@@ -32,7 +30,8 @@ bot._leavemessagesenabled = False
 bot._leavemsgch = 0
 
 if __name__ == '__main__':
-    for filename in os.listdir('./src/cogs'):
+    print(os.listdir('/'))
+    for filename in os.listdir('./cogs'):
         if filename.endswith('.py'):
             bot.load_extension(f'cogs.{filename[:-3]}')
             print(f"Loaded {filename[:-3]}")
