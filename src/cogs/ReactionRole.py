@@ -1,25 +1,11 @@
 import discord
 from discord.ext import commands
-import sqlite3
-
-db = sqlite3.connect('main.db')
-c = db.cursor()
-
-c.execute("""
-        CREATE TABLE IF NOT EXISTS reactrole (
-            role_name TEXT,
-            role_id INTEGER,
-            emoji TEXT,
-            message_id INTEGER,
-            guild_id INTEGER
-        )""")
-
-db.commit()
-db.close()
 
 class ReactionRole(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.db = bot.db
+        self.c = bot.c
 
     @commands.command(aliases=['rr', 'reactrole'])
     @commands.has_permissions(manage_roles=True)
@@ -27,12 +13,8 @@ class ReactionRole(commands.Cog):
     async def _reactrole(self, ctx, emoji, role: discord.Role, messageid):
         msg = await ctx.channel.fetch_message(messageid)
         await msg.add_reaction(emoji)
-        db = sqlite3.connect('main.db')
-        c = db.cursor()
-
-        c.execute("INSERT INTO reactrole VALUES (?,?,?,?,?)", (role.name, role.id, str(emoji), messageid, ctx.guild.id))
-        db.commit()
-        db.close()
+        self.c.execute("INSERT INTO reactrole VALUES (?,?,?,?,?)", (role.name, role.id, str(emoji), messageid, ctx.guild.id))
+        self.db.commit()
 
         await ctx.message.delete()
 
@@ -56,12 +38,8 @@ class ReactionRole(commands.Cog):
         if payload.member.bot:
             return
 
-        db = sqlite3.connect('main.db')
-        c = db.cursor()
-
-        c.execute("SELECT * FROM reactrole WHERE guild_id = ?", (payload.guild_id,))
-        data = c.fetchall()
-        db.close()
+        self.c.execute("SELECT * FROM reactrole WHERE guild_id = ?", (payload.guild_id,))
+        data = self.c.fetchall()
 
         if not data:
             return
@@ -73,12 +51,8 @@ class ReactionRole(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload):
-        db = sqlite3.connect('main.db')
-        c = db.cursor()
-
-        c.execute("SELECT * FROM reactrole WHERE guild_id = ?", (payload.guild_id,))
-        data = c.fetchall()
-        db.close()
+        self.c.execute("SELECT * FROM reactrole WHERE guild_id = ?", (payload.guild_id,))
+        data = self.c.fetchall()
 
         if not data:
             return

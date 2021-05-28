@@ -1,24 +1,11 @@
 import discord
 from discord.ext import commands
 
-import sqlite3
-
-db = sqlite3.connect('main.db')
-c = db.cursor()
-
-c.execute("""
-        CREATE TABLE IF NOT EXISTS warnings (
-            user_id INTEGER,
-            reason TEXT,
-            guild_id INTEGER
-        )""")
-
-db.commit()
-db.close()
-
 class WarningSys(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.db = bot.db
+        self.c = bot.c
 
     # Warn command
     @commands.command()
@@ -36,13 +23,8 @@ class WarningSys(commands.Cog):
                 return
             reason = ' '.join(reason)
 
-            db = sqlite3.connect('main.db')
-            c = db.cursor()
-
-            c.execute("INSERT INTO warnings (user_id,reason,guild_id) VALUES (?,?,?)", (user.id, reason, ctx.guild.id))
-
-            db.commit()
-            db.close()
+            self.c.execute("INSERT INTO warnings (user_id,reason,guild_id) VALUES (?,?,?)", (user.id, reason, ctx.guild.id))
+            self.db.commit()
 
             await ctx.send(
                 f"Warned Them! To check their warnings, use the `{self.bot.command_prefix}warnings` command."
@@ -89,13 +71,8 @@ class WarningSys(commands.Cog):
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def warnings(self, ctx, user: discord.User):
-        db = sqlite3.connect('main.db')
-        c = db.cursor()
-
-        c.execute("SELECT * FROM warnings WHERE user_id = ? AND guild_id = ?", (user.id, ctx.guild.id))
-        user_reports = c.fetchall()
-
-        db.close()
+        self.c.execute("SELECT * FROM warnings WHERE user_id = ? AND guild_id = ?", (user.id, ctx.guild.id))
+        user_reports = self.c.fetchall()
 
         if not user_reports:
             await ctx.send(f"{user.name} has never been reported!")

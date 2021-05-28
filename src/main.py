@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import discord
 from discord.ext import commands
 import logging
-import aiohttp
+import sqlite3
 
 # Loading the .env file to use the token
 load_dotenv()
@@ -22,12 +22,26 @@ bot = commands.Bot(command_prefix="$", help_command=None, intents=discord.Intent
 # Bot owners
 bot.owner_ids = {453875226757955585, 506093256501755904}
 
-# Using bot object to transfer data through cogs. Soon will be gone.
-bot._start_time = ''
-bot._welcomemessagesenabled = False
-bot._welcmsgch = 0
-bot._leavemessagesenabled = False
-bot._leavemsgch = 0
+bot.db = sqlite3.connect('main.db')
+bot.c = bot.db.cursor()
+
+bot.c.execute("""
+        CREATE TABLE IF NOT EXISTS reactrole (
+            role_name TEXT,
+            role_id INTEGER,
+            emoji TEXT,
+            message_id INTEGER,
+            guild_id INTEGER
+        )""")
+bot.db.commit()
+
+bot.c.execute("""
+        CREATE TABLE IF NOT EXISTS warnings (
+            user_id INTEGER,
+            reason TEXT,
+            guild_id INTEGER
+        )""")
+bot.db.commit()
 
 if __name__ == '__main__':
     print(os.listdir('/'))

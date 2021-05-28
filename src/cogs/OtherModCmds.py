@@ -4,7 +4,6 @@ from discord.ext import commands
 import typing
 from io import BytesIO
 import aiohttp
-import requests
 
 class OtherModCmds(commands.Cog):
     def __init__(self, bot):
@@ -86,38 +85,6 @@ class OtherModCmds(commands.Cog):
 
         if isinstance(error, commands.CommandError):
             await ctx.send("Some error occured! Try again later.")
-            return
-
-    # Prefix changer
-    @commands.command()
-    @commands.has_permissions(administrator=True)
-    @commands.cooldown(1, 10, commands.BucketType.user)
-    async def prefix(self, ctx, prefixnew):
-        # This and below function for changing prefixes
-        def change_prefix(newprefix):
-            self.bot.command_prefix = newprefix
-
-        if prefixnew != "reset":
-            change_prefix(prefixnew)
-        # to reset to default prefix
-        elif prefixnew == "reset":
-            change_prefix("$")
-
-        messagetosend = f"I just changed my prefix to `{self.bot.command_prefix}`"
-        await ctx.send(messagetosend)
-        return
-
-    # Prefix changer error handling
-    @prefix.error
-    async def prefix_error(self, ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(f'The prefix is `{self.bot.command_prefix}` !')
-            return
-
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send(
-                "Noob you can't change the prefix and if you wanna know the prefix, ping me!"
-            )
             return
 
     @commands.command()
