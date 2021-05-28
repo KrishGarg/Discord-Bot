@@ -26,7 +26,7 @@ class ReactionRole(commands.Cog):
 
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
-                f"I think you missed some arguments. I know this is a complicated command so to check the correct syntax, run `{self.bot.command_prefix}help moderation` !")
+                f"I think you missed some arguments. I know this is a complicated command so to check the correct syntax, run `{self.bot.prefix(ctx.guild.id)}help moderation` !")
             return
 
         if isinstance(error, commands.BadArgument):

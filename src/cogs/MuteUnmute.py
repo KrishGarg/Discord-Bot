@@ -83,7 +83,7 @@ class MuteUnmute(commands.Cog):
 
         if not discord.utils.get(ctx.guild.roles, name="Muted"):
             await ctx.send(
-                f"Looks like there is no 'Muted' role! To make me create one, send `{self.bot.command_prefix}muterole` and I will create one for you!"
+                f"Looks like there is no 'Muted' role! To make me create one, send `{self.bot.prefix(ctx.guild.id)}muterole` and I will create one for you!"
             )
             return
 
@@ -188,7 +188,7 @@ You will stay muted till a moderator unmutes you!
 
         if not discord.utils.get(ctx.guild.roles, name="Muted"):
             await ctx.send(
-                f"Looks like there is no 'Muted' role! To make me create one, send `{self.bot.command_prefix}muterole` and I will create one for you!"
+                f"Looks like there is no 'Muted' role! To make me create one, send `{self.bot.prefix(ctx.guild.id)}muterole` and I will create one for you!"
             )
             return
 

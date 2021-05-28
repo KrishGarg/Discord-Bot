@@ -27,7 +27,7 @@ class WarningSys(commands.Cog):
             self.db.commit()
 
             await ctx.send(
-                f"Warned Them! To check their warnings, use the `{self.bot.command_prefix}warnings` command."
+                f"Warned Them! To check their warnings, use the `{self.bot.prefix(ctx.guild.id)}warnings` command."
             )
 
             try:

@@ -16,7 +16,7 @@ class HelpCommand(commands.Cog):
     **{0}help miscellaneous :** To bring up the miscellaneous command's help menu!
     **{0}help modaction :** To bring up the server moderating command's help menu!
     **{0}help someperm :** To bring up commands which need some specific permissions to be ran! These are mainly mod-only commands.
-          '''.format(self.bot.command_prefix)
+          '''.format(self.bot.prefix(ctx.guild.id))
 
             the_embed = discord.Embed(title="↓ Help Menu ↓",
                                       description=commandshelptext,
@@ -46,7 +46,7 @@ class HelpCommand(commands.Cog):
     **{0}warnings [user] :** Shows the warnings the mentioned person has received till now.
 
     ^ **Member should have the required permission to run the command!**
-            '''.format(self.bot.command_prefix)
+            '''.format(self.bot.prefix(ctx.guild.id))
             the_embed = discord.Embed(title="↓ Moderation (Action) Commands Help Menu ↓",
                                       description=modhelp,
                                       color=0x00ff00)
@@ -74,7 +74,7 @@ class HelpCommand(commands.Cog):
     **{0}joke2 :** Returns a joke (This is a backup command with another api.)
     
     **{0}quote :** Returns a quote.
-            '''.format(self.bot.command_prefix)
+            '''.format(self.bot.prefix(ctx.guild.id))
 
             the_embed = discord.Embed(title="↓ Miscellaneous Commands Help Menu ↓",
                                       description=misctext,
@@ -105,7 +105,7 @@ class HelpCommand(commands.Cog):
     **{0}rr or {0}reactrole [emoji] [role id or tag] [message id] :** `Manage Roles`^. Adds a reaction role to a message. \*BETA*
             
     ^ **Member should have the required permission to run the command!**
-            '''.format(self.bot.command_prefix)
+            '''.format(self.bot.prefix(ctx.guild.id))
 
             the_embed = discord.Embed(title="↓ Moderation (Some Perms) Commands Help Menu ↓",
                                       description=text,
