@@ -10,25 +10,6 @@ class MiscCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    # Uptime Command
-    @commands.command()
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def uptime(self, ctx):
-        current_time = time.time()
-        difference = int(round(current_time - self.bot._start_time))
-        text = str(datetime.timedelta(seconds=difference))
-        embed = discord.Embed(colour=0x00ff00)
-        embed.add_field(name="Uptime", value=text)
-        embed.set_footer(
-            text="OwO",
-            icon_url=
-            "https://cdn.discordapp.com/avatars/810187428086022254/dcc43fae4bc05ec1db81c516ded44224.png?size=1024"
-        )
-        try:
-            await ctx.send(embed=embed)
-        except discord.HTTPException:
-            await ctx.send("Current uptime: " + text)
-
     # Server Info Command!
     @commands.command(aliases=['svinfo', 'serverinfo', 'infoserver', 'infosv', 'si'])
     @commands.cooldown(1, 20, commands.BucketType.user)
@@ -63,9 +44,8 @@ class MiscCommands(commands.Cog):
                              icon_url=ctx.message.author.avatar_url)
         the_embed.set_thumbnail(url=ctx.guild.icon_url)
         the_embed.set_footer(
-            text="OwO",
-            icon_url=
-            "https://cdn.discordapp.com/avatars/810187428086022254/dcc43fae4bc05ec1db81c516ded44224.png?size=1024"
+            text=f"{self.bot.user.name}",
+            icon_url=f"{self.bot.user.avatar_url}"
         )
 
         await ctx.send(embed=the_embed)
@@ -115,6 +95,10 @@ class MiscCommands(commands.Cog):
                 name="***__Click below to open the image in your browser!__***",
                 value=f"[png]({png}) | [jpg]({jpg}) | [{giforwebp}]({webp})")
             the_embed.set_image(url=the_user.avatar_url)
+            the_embed.set_footer(
+                text=f"{self.bot.user.name}",
+                icon_url=f"{self.bot.user.avatar_url}"
+            )
 
             await ctx.send(embed=the_embed)
             return

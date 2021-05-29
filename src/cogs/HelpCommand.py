@@ -24,8 +24,9 @@ class HelpCommand(commands.Cog):
             the_embed.set_author(name=ctx.message.author.name,
                                  icon_url=ctx.message.author.avatar_url)
             the_embed.set_footer(
-                text="OwO",
-                icon_url=self.bot.user.avatar_url)
+                text=f"{self.bot.user.name}",
+                icon_url=f"{self.bot.user.avatar_url}"
+            )
             await ctx.message.channel.send(embed=the_embed)
             return
 
@@ -53,8 +54,9 @@ class HelpCommand(commands.Cog):
             the_embed.set_author(name=ctx.message.author.name,
                                  icon_url=ctx.message.author.avatar_url)
             the_embed.set_footer(
-                text="OwO",
-                icon_url=self.bot.user.avatar_url)
+                text=f"{self.bot.user.name}",
+                icon_url=f"{self.bot.user.avatar_url}"
+            )
 
             await ctx.send(embed=the_embed)
             return
@@ -82,8 +84,9 @@ class HelpCommand(commands.Cog):
             the_embed.set_author(name=ctx.message.author.name,
                                  icon_url=ctx.message.author.avatar_url)
             the_embed.set_footer(
-                text="OwO",
-                icon_url=self.bot.user.avatar_url)
+                text=f"{self.bot.user.name}",
+                icon_url=f"{self.bot.user.avatar_url}"
+            )
 
             await ctx.send(embed=the_embed)
             return
@@ -113,8 +116,9 @@ class HelpCommand(commands.Cog):
             the_embed.set_author(name=ctx.message.author.name,
                                  icon_url=ctx.message.author.avatar_url)
             the_embed.set_footer(
-                text="OwO",
-                icon_url=self.bot.user.avatar_url)
+                text=f"{self.bot.user.name}",
+                icon_url=f"{self.bot.user.avatar_url}"
+            )
 
             await ctx.send(embed=the_embed)
             return

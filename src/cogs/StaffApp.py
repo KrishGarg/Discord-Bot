@@ -13,7 +13,10 @@ class StaffApp(commands.Cog):
         emb1 = discord.Embed(title="Staff Application!",
                              description="React to the below 📜 paper to start the process! If you can't start the process, there may be some other person applying so please wait!",
                              color=0x00ff00)
-        emb1.set_footer(text='OwO', icon_url=f'{self.bot.user.avatar_url}')
+        emb1.set_footer(
+                text=f"{self.bot.user.name}",
+                icon_url=f"{self.bot.user.avatar_url}"
+            )
         emb = await ctx.send(embed=emb1)
         await emb.add_reaction('📜')
         await ctx.message.delete()

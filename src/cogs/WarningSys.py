@@ -39,6 +39,10 @@ class WarningSys(commands.Cog):
         Reason Given: {reason}
         Warned By: {ctx.author.mention}
                 ''')
+                embe.set_footer(
+                    text=f"{self.bot.user.name}",
+                    icon_url=f"{self.bot.user.avatar_url}"
+                )
                 await warnydm.send(embed=embe)
             except discord.Forbidden:
                 await ctx.send("By the way, their DMs are closed/ I can't send a DM to them so they might not know that they have been warned!")
@@ -89,6 +93,10 @@ class WarningSys(commands.Cog):
                 **Warning Reasons: **
                 {reasonstr}
                       ''')
+            emb.set_footer(
+                text=f"{self.bot.user.name}",
+                icon_url=f"{self.bot.user.avatar_url}"
+            )
             await ctx.send(embed=emb)
 
     # Warning command error handling

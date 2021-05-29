@@ -17,13 +17,18 @@ class KickBanUnban(commands.Cog):
             return
 
         usersdm = await user.create_dm()
-        dm_embed = discord.Embed(title="YOU HAVE BEEN KICKED!",
-                                 description=f'''
+        dm_embed = discord.Embed(
+            title="YOU HAVE BEEN KICKED!",
+            description=f'''
     You have been kicked from **{ctx.guild.name}**.
     Reason: {reason1}
     Banned By: {ctx.author.mention}
     ''',
-                                 color=0x00ff00)
+            color=0x00ff00)
+        dm_embed.set_footer(
+                text=f"{self.bot.user.name}",
+                icon_url=f"{self.bot.user.avatar_url}"
+            )
         await usersdm.send(embed=dm_embed)
         await user.kick(
             reason=
@@ -61,13 +66,18 @@ class KickBanUnban(commands.Cog):
             return
 
         usersdm = await user.create_dm()
-        dm_embed = discord.Embed(title="YOU HAVE BEEN BANNED!",
-                                 description=f'''
+        dm_embed = discord.Embed(
+            title="YOU HAVE BEEN BANNED!",
+            description=f'''
     You have been banned from **{ctx.guild.name}**.
     Reason: {reason1}
     Banned By: {ctx.author.mention}
     ''',
-                                 color=0x00ff00)
+            color=0x00ff00)
+        dm_embed.set_footer(
+            text=f"{self.bot.user.name}",
+            icon_url=f"{self.bot.user.avatar_url}"
+        )
         await usersdm.send(embed=dm_embed)
         await user.ban(
             reason=

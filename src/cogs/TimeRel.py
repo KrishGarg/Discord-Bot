@@ -1,6 +1,8 @@
 import asyncio
-
+import discord
 from discord.ext import commands
+import time
+import datetime
 
 
 class TimeRel(commands.Cog):
@@ -28,7 +30,7 @@ class TimeRel(commands.Cog):
             await ctx.send("Wanna break me?! Limit is 1 week!!")
             return
         themsg = await ctx.send(f"{timeinsec}s..")
-        for i in range(timeinsec):
+        for _ in range(timeinsec):
             timeinsec -= 1
             if timeinsec % 5 == 0:
                 await themsg.edit(content=f"{timeinsec}s..")
@@ -44,6 +46,24 @@ class TimeRel(commands.Cog):
         if isinstance(error, commands.BadArgument):
             await ctx.send("Umm. Check that time you sent me again dude.")
             return
+
+    # Uptime Command
+    @commands.command()
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def uptime(self, ctx):
+        current_time = time.time()
+        difference = int(round(current_time - self.bot._start_time))
+        text = str(datetime.timedelta(seconds=difference))
+        embed = discord.Embed(colour=0x00ff00)
+        embed.add_field(name="Uptime", value=text)
+        embed.set_footer(
+            text=f"{self.bot.user.name}",
+            icon_url=f"{self.bot.user.avatar_url}"
+        )
+        try:
+            await ctx.send(embed=embed)
+        except discord.HTTPException:
+            await ctx.send("Current uptime: " + text)
 
 
 def setup(bot):

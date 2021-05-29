@@ -102,6 +102,10 @@ class MuteUnmute(commands.Cog):
 You were muted in **{ctx.guild.name}** by {ctx.author.mention}!
 You will stay muted till a moderator unmutes you!        
                 ''')
+            dmemb.set_footer(
+                text=f"{self.bot.user.name}",
+                icon_url=f"{self.bot.user.avatar_url}"
+            )
             muteddm = await user.create_dm()
             await muteddm.send(embed=dmemb)
         except:
@@ -149,6 +153,10 @@ You will stay muted till a moderator unmutes you!
                 dmemb = discord.Embed(title="You were UNMUTED!", color=0x00ff00, description=f'''
             You were unmuted in **{ctx.guild.name}** by {ctx.author.mention}!   
                             ''')
+                dmemb.set_footer(
+                    text=f"{self.bot.user.name}",
+                    icon_url=f"{self.bot.user.avatar_url}"
+                )
                 muteddm = await user.create_dm()
                 await muteddm.send(embed=dmemb)
             except:
@@ -251,6 +259,10 @@ You will stay muted till a moderator unmutes you!
             dmemb = discord.Embed(title="You were MUTED!", color=0x00ff00,description=f'''
     You were temporarily muted in **{ctx.guild.name}** by {ctx.author.mention} for {timemsg}!
             ''')
+            dmemb.set_footer(
+                text=f"{self.bot.user.name}",
+                icon_url=f"{self.bot.user.avatar_url}"
+            )
             muteddm = await user.create_dm()
             await muteddm.send(embed= dmemb)
         except:
