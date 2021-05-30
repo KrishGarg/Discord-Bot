@@ -53,11 +53,6 @@ class Events(commands.Cog):
     # Error handling (Atleast some of it)
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.CommandNotFound):
-            await ctx.send(
-                f"Yo I can't find that command. Try `{self.bot.prefix(ctx.guild.id)}help` for the list of commands available!"
-            )
-
         if isinstance(error, commands.CommandOnCooldown):
             await ctx.send(f"The command is on cooldown! Try again in {error.retry_after :,.2f} seconds.")
             return
