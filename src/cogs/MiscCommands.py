@@ -90,7 +90,8 @@ class MiscCommands(commands.Cog):
                 giforwebp = "gif"
 
             the_embed = discord.Embed(title=f'Avatar for {the_user}',
-                                      description="")
+                                      description="",
+                                      color=0x00ff00)
             the_embed.add_field(
                 name="***__Click below to open the image in your browser!__***",
                 value=f"[png]({png}) | [jpg]({jpg}) | [{giforwebp}]({webp})")
