@@ -23,6 +23,8 @@ bot = commands.Bot(command_prefix=get_prefix, help_command=None, intents=discord
 # Bot owners
 bot.owner_ids = {453875226757955585, 506093256501755904}
 
+bot.DEFAULT_PREFIX = "$"
+
 bot.db = sqlite3.connect('main.db')
 bot.c = bot.db.cursor()
 
@@ -56,7 +58,7 @@ def pref_help(guild_id: int):
     bot.c.execute("SELECT prefix FROM prefixes WHERE guild_id = ?", (guild_id,))
     pref = bot.c.fetchone()
     if not pref:
-        return "$"
+        return bot.DEFAULT_PREFIX
     return pref[0]
 
 

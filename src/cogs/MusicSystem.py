@@ -17,9 +17,12 @@ class MusicSystem(commands.Cog):
 
     @commands.command()
     async def join(self, ctx):
-        await ctx.author.voice.channel.connect()  # Joins author's voice channel
-        await ctx.send(f'Joined your channel {ctx.author.mention}!')
-        return
+        try:
+            await ctx.author.voice.channel.connect()  # Joins author's voice channel
+            await ctx.send(f'Joined your channel {ctx.author.mention}!')
+            return
+        except Exception as ex:
+            print(ex)
 
     @commands.command()
     async def leave(self, ctx):

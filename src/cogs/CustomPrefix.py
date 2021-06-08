@@ -6,9 +6,9 @@ def get_prefix(bot, message):
     pref = bot.c.fetchone()
 
     if not pref:
-        bot.c.execute("INSERT INTO prefixes VALUES (?, ?)", (message.guild.id, "$"))
+        bot.c.execute("INSERT INTO prefixes VALUES (?, ?)", (message.guild.id, bot.DEFAULT_PREFIX))
         bot.db.commit()
-        return commands.when_mentioned_or("$")(bot, message)
+        return commands.when_mentioned_or(bot.DEFAULT_PREFIX)(bot, message)
     return commands.when_mentioned_or(pref[0])(bot, message)
 
 
@@ -27,6 +27,16 @@ class CustomPrefix(commands.Cog):
         self.c.execute("UPDATE prefixes SET prefix = ? WHERE guild_id = ?", (new_prefix, ctx.guild.id))
         self.db.commit()
         await ctx.send(f"New prefix for this server is: `{new_prefix}`")
+
+    @commands.Cog.listener()
+    async def on_guild_join(self, guild):
+        self.c.execute("INSERT INTO prefixes (guild_id, prefix) VALUES (?, ?)", (guild.id, self.bot.DEFAULT_PREFIX))
+        self.db.commit()
+
+    @commands.Cog.listener()
+    async def on_guild_remove(self, guild):
+        self.c.execute("DELETE FROM prefixes WHERE guild_id = ?", (guild.id, ))
+        self.db.commit()
 
 def setup(bot):
     bot.add_cog(CustomPrefix(bot))
