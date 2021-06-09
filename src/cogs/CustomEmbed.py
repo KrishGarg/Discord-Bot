@@ -20,6 +20,10 @@ class CustomEmbed(commands.Cog):
             name=ctx.author.name,
             icon_url=ctx.author.avatar_url
         )
+        em.set_footer(
+            text=self.bot.user.name,
+            icon_url=self.bot.user.avatar_url
+        )
         await channel.send(embed=em)
         await ctx.message.delete()
         await ctx.send("Sent the message!", delete_after=3)
