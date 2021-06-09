@@ -41,7 +41,8 @@ class CustomEmbed(commands.Cog):
         name="Step-By-Step Embed Builder",
         aliases=[
             "embed",
-            "sbsembed"
+            "sbsembed",
+            "embedbuilder"
         ]
     )
     @commands.has_permissions(administrator=True)
