@@ -7,3 +7,9 @@ class NameToColorFail(commands.CheckFailure):
     error happens.
     """
     pass
+
+class NotGuildOwner(commands.CheckFailure):
+    """
+    This error is used for the check 'is_server_owner'.
+    """
+    pass
