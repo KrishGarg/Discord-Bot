@@ -54,8 +54,10 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(f"The command is on cooldown! Try again in {error.retry_after :,.2f} seconds.")
-            return
+            return await ctx.send(f"The command is on cooldown! Try again in {error.retry_after :,.2f} seconds.")
+        
+        if isinstance(error, commands.MissingRequiredArgument):
+            return await ctx.send(f"`{self.bot.prefix(ctx.guild.id)}{ctx.command.aliases[0]} {ctx.command.signature}`.")
 
 def setup(bot):
     bot.add_cog(Events(bot))
