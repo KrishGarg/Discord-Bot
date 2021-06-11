@@ -7,10 +7,17 @@ class KickBanUnban(commands.Cog):
         self.bot = bot
 
     # Kick Command
-    @commands.command()
+    @commands.command(
+        name="Kick a member",
+        description="A command which can be used by a moderator (who has kick members permission) to kick a member.",
+        usage="kick <member> [reason]",
+        aliases=[
+            "kick"
+        ]
+    )
     @commands.has_permissions(kick_members=True)
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def kick(self, ctx, user: discord.Member, reason1="None Given"):
+    async def _kick(self, ctx, user: discord.Member, reason1="None Given"):
 
         if ctx.author.top_role.position <= user.top_role.position:
             await ctx.send("Lol you have kick perms but you are not as powerful as the guy you are trying to kick!")
@@ -37,8 +44,8 @@ class KickBanUnban(commands.Cog):
             f"I kicked {user.mention} with the reason given as `{reason1}`")
 
     # Kick Error handling
-    @kick.error
-    async def kick_error(self, ctx, error):
+    @_kick.error
+    async def _kick_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send(
                 "You can't kick anyone. Get enough permissions first lol.")
@@ -56,10 +63,17 @@ class KickBanUnban(commands.Cog):
             await ctx.send("Some error occured try again later!")
 
     # Ban Command
-    @commands.command()
+    @commands.command(
+        name="Ban a Member",
+        description="A command which can be used by a moderator (who has ban members permission) to ban a member.",
+        usage="ban <member> [reason]",
+        aliases=[
+            "ban"
+        ]
+    )
     @commands.has_permissions(ban_members=True)
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def ban(self, ctx, user: discord.Member, *, reason1="None Given"):
+    async def _ban(self, ctx, user: discord.Member, *, reason1="None Given"):
 
         if ctx.author.top_role.position <= user.top_role.position:
             await ctx.send("Lol you have ban perms but you are not as powerful as the guy you are trying to ban!")
@@ -86,8 +100,8 @@ class KickBanUnban(commands.Cog):
             f"I banned {user.mention} with the reason given as `{reason1}`")
 
     # Ban Command Error handling
-    @ban.error
-    async def ban_error(self, ctx, error):
+    @_ban.error
+    async def _ban_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send(
                 "You can't ban anyone. Get enough permissions first lol.")
@@ -105,10 +119,17 @@ class KickBanUnban(commands.Cog):
             await ctx.send("Some error occured try again later!")
 
     # Unban command
-    @commands.command()
+    @commands.command(
+        name="Unban a Member",
+        description="A command which can be used by a moderator (who has ban members permission) to unban a member.",
+        usage="unban <member's user id> [reason]",
+        aliases=[
+            "unban"
+        ]
+    )
     @commands.has_permissions(ban_members=True)
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def unban(self, ctx, user_id: int, *, reason1="None Given"):
+    async def _unban(self, ctx, user_id: int, *, reason1="None Given"):
         try:
             user = await self.bot.fetch_user(user_id)
             await ctx.guild.unban(
@@ -122,8 +143,8 @@ class KickBanUnban(commands.Cog):
             raise commands.BadArgument()
 
     # Unban command error handling
-    @unban.error
-    async def unban_error(self, ctx, error):
+    @_unban.error
+    async def _unban_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("You can't do that. Get enough permission first lol!")
             return

@@ -12,6 +12,8 @@ class CustomEmbed(commands.Cog):
 
     @commands.command(
         name="One Line Embed",
+        description="A command to send embeds to a specific channel. This specific command is used to make the embed in 1 line. Not recommended but for people in super hurry.",
+        usage="onlineembed <channel> <color> <'title in inverted commas'> <'description in inverted commas'>",
         aliases=[
             "onelineembed",
             "olembed"
@@ -39,6 +41,8 @@ class CustomEmbed(commands.Cog):
 
     @commands.command(
         name="Step-By-Step Embed Builder",
+        description="A command to send embeds to certain channels. This is a step-by-step method and the builder is started when an admin runs this command.",
+        usage="embed",
         aliases=[
             "embed",
             "sbsembed",
@@ -116,10 +120,9 @@ The process will start in 5 seconds.
             icon_url=self.bot.user.avatar_url
         )
         await channel.send(embed=em)
-        await the_msg.edit(content=f"Embed sent to {channel.mention}!")
+        await the_msg.edit(content=f"Embed sent to {channel.mention}!", delete_after=3)
         await asyncio.sleep(3)
         await ctx.message.delete()
-        await the_msg.delete()
 
 def setup(bot):
     bot.add_cog(CustomEmbed(bot))

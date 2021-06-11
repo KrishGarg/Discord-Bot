@@ -7,21 +7,29 @@ class AdminOnly(commands.Cog):
         self.bot = bot
 
     # Emergency shutdown command
-    @commands.command(aliases=['disconnect', 'close', 'stopbot'])
+    @commands.command(
+        aliases=[
+            'disconnect',
+            'close',
+            'stopbot',
+            'logout'
+            ],
+        hidden=True
+        )
     @commands.is_owner()
-    async def logout(self, ctx):
+    async def _logout(self, ctx):
         await ctx.send(f"See you later {ctx.author.mention}!")
         self.bot.db.close()
         await self.bot.close()
 
     # Emergency shutdown error handling
-    @logout.error
+    @_logout.error
     async def logout_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Ha! No!")
 
     # Spam command!
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.is_owner()
     async def spam(self, ctx, count: int, *, text: str):
         await ctx.message.delete()
@@ -45,7 +53,7 @@ class AdminOnly(commands.Cog):
             await ctx.send("Some error occured boss!")
             return
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.is_owner()
     async def reloadall(self, ctx):
         x = await ctx.send("Reloading all cogs...")
@@ -58,14 +66,12 @@ class AdminOnly(commands.Cog):
         await x.edit(content="Reloaded!")
         return
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.is_owner()
     async def ghostspammer(self, ctx, count: int, *, text: str):
         await ctx.message.delete()
-        for i in range(count):
-            x = await ctx.send(text)
-            await x.delete()
-        return
+        for _ in range(count):
+            await ctx.send(text, delete_after=0.1)
 
     @commands.command()
     @commands.is_owner()
@@ -73,11 +79,10 @@ class AdminOnly(commands.Cog):
         await ctx.message.delete()
         dm = await user.create_dm()
         try:
-            for i in range(count):
-                y = await dm.send(text)
-                await y.delete()
+            for _ in range(count):
+                await dm.send(text, delete_after=0.1)
 
-            await ctx.send(f'{ctx.author.mention}, done the work xd.',delete_after=10)
+            await ctx.send(f'{ctx.author.mention}, done the work xd.',delete_after=5)
 
         except:
             await ctx.send("I think they have their dms closed!")
