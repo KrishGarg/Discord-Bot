@@ -10,8 +10,9 @@ class CustomEmbed(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+
     @commands.command(
-        name="One Line Embed",
+        name="One Line Embed Builder",
         description="A command to send embeds to a specific channel. This specific command is used to make the embed in 1 line. Not recommended but for people in super hurry.",
         usage="onlineembed <channel> <color> <'title in inverted commas'> <'description in inverted commas'>",
         aliases=[
@@ -39,8 +40,9 @@ class CustomEmbed(commands.Cog):
         await ctx.message.delete()
         await ctx.send("Sent the message!", delete_after=3)
 
+
     @commands.command(
-        name="Step-By-Step Embed Builder",
+        name="Eloborative Embed Builder",
         description="A command to send embeds to certain channels. This is a step-by-step method and the builder is started when an admin runs this command.",
         usage="embed",
         aliases=[

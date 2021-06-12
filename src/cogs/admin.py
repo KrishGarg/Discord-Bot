@@ -110,7 +110,7 @@ class Admin(commands.Cog):
 
 
     @commands.command(
-        name="load",
+        name="Load Module",
         description="A command used to load a cog/extension. Bot Owner Only.",
         usage="load <module>",
         aliases=[
@@ -129,7 +129,7 @@ class Admin(commands.Cog):
 
 
     @commands.command(
-        name="unload",
+        name="Unload Module",
         description="A command used to inload a cog/extension. Bot Owner Only.",
         usage="unload <module>",
         aliases=[
@@ -148,7 +148,7 @@ class Admin(commands.Cog):
 
 
     @commands.group(
-        name='reload', 
+        name='Reload Module', 
         hidden=True, 
         invoke_without_command=True,
         description="A command to reload a module. Bot Owner Only.",
@@ -170,7 +170,7 @@ class Admin(commands.Cog):
     @commands.command(
         pass_context=True, 
         hidden=True, 
-        name='eval',
+        name='Evaluate',
         description="A command to evaluate some python code. Bot Owner Only.",
         usage="eval <code (preferrably in code blocks)>",
         aliases=[

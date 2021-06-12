@@ -8,7 +8,7 @@ class AdminOnly(commands.Cog):
 
 
     @commands.command(
-        name="logout",
+        name="Close Bot",
         description="A command to shut down the bot.",
         usage="logout",
         aliases=[
@@ -32,7 +32,7 @@ class AdminOnly(commands.Cog):
 
 
     @commands.command(
-        name="spam",
+        name="Spam in Chat",
         description="A command to spam some text in a channel. Bot Owner only.",
         usage="spam <count> <text>",
         aliases=[
@@ -64,7 +64,7 @@ class AdminOnly(commands.Cog):
 
 
     @commands.command(
-        name="reloadall",
+        name="Reload all cogs",
         description="A command to reload all cogs. Bot Owner only.",
         usage="reloadall",
         aliases=[
@@ -86,7 +86,7 @@ class AdminOnly(commands.Cog):
 
 
     @commands.command(
-        name="ghostspammer",
+        name="Ghost Spammer",
         description="A command to spam and then delete the messages. Bot Owner only.",
         usage="ghostspammer <count> <text>",
         aliases=[
@@ -102,7 +102,7 @@ class AdminOnly(commands.Cog):
 
 
     @commands.command(
-        name="ghostdmspammer",
+        name="Ghost DM Spammer",
         description="A command to spam someone's dms and then delete those. Bot Owner only.",
         usage="ghostdmspammer <user> <count> <text>",
         aliases=[
