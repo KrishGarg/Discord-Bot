@@ -12,7 +12,6 @@ class AdminOnly(commands.Cog):
         description="A command to shut down the bot.",
         usage="logout",
         aliases=[
-            'disconnect',
             'close',
             'stopbot',
             'logout'
