@@ -107,7 +107,8 @@ class AdminOnly(commands.Cog):
         usage="ghostdmspammer <user> <count> <text>",
         aliases=[
             "ghostdmspammer"
-        ]
+        ],
+        hidden=True
     )
     @commands.is_owner()
     async def _ghostdmspammer(self, ctx, user: discord.Member,count: int, *, text: str):
