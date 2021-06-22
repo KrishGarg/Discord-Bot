@@ -16,8 +16,15 @@ class MusicSystem(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
-    async def join(self, ctx):
+    @commands.command(
+        name="Join the VC Command",
+        description="A command which makes the bot join your voice channel.",
+        usage="join",
+        aliases=[
+            "join"
+        ]
+    )
+    async def _join(self, ctx):
         try:
             await ctx.author.voice.channel.connect()  # Joins author's voice channel
             await ctx.send(f'Joined your channel {ctx.author.mention}!')
@@ -25,14 +32,30 @@ class MusicSystem(commands.Cog):
         except Exception:
             await ctx.send("Some issue was there when trying to join your voice channel!")
 
-    @commands.command()
-    async def leave(self, ctx):
+    @commands.command(
+        name="Leave the VC Command",
+        description="A command which makes the bot leave the voice channel.",
+        usage="leave",
+        aliases=[
+            "leave",
+            "disconnect",
+            "dc"
+        ]
+    )
+    async def _leave(self, ctx):
         await ctx.voice_client.disconnect()
         await ctx.send(f'Good Bye {ctx.author.mention}!')
         return
 
-    @commands.command()
-    async def play(self, ctx, *, url):
+    @commands.command(
+        name="Play the Music Command",
+        description="A command that plays the music. The user can either send the youtube link or the name of the song. If the user sends the name, it will lookup for the query on youtube and return the 1st result.",
+        usage="play <song_name or youtube_link>",
+        aliases=[
+            "play"
+        ]
+    )
+    async def _play(self, ctx, *, url):
         player = music.get_player(guild_id=ctx.guild.id)
         try:
             if not music.get_player(guild_id=ctx.guild.id):
@@ -49,15 +72,22 @@ class MusicSystem(commands.Cog):
         except NotConnectedToVoice:
             return await ctx.send(f"The bot is not in a voice channel! Please join a voice channel and run `{self.bot.prefix(ctx.guild.id)}join`.")
 
-    @play.error
+    @_play.error
     async def play_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             return await ctx.send("You forgot to send me the song name/link!")
         if error == "'NoneType' object is not subscriptable":
             return await ctx.send("There was some issue with playing that song.")
 
-    @commands.command()
-    async def pause(self, ctx):
+    @commands.command(
+        name="Pause the Music Command",
+        description="A command which pauses the music the bot is currently playing.",
+        usage="pause",
+        aliases=[
+            "pause"
+        ]
+    )
+    async def _pause(self, ctx):
         player = music.get_player(guild_id=ctx.guild.id)
         if not player:
             return await ctx.send("I don't think I am playing anything!")
@@ -66,7 +96,10 @@ class MusicSystem(commands.Cog):
         return
 
     @commands.command(
-        aliases = [
+        name="Resume a Music Command",
+        description="A command which resumes the paused music.",
+        usage="resume",
+        aliases=[
             "resume",
             "continue"
         ]
@@ -79,7 +112,14 @@ class MusicSystem(commands.Cog):
         await ctx.send(f"Resumed {song.name}")
         return
 
-    @commands.command()
+    @commands.command(
+        name="Stop the Music Command",
+        description="A command to stop the music currently playing. Also removes the song from the queue.",
+        usage="stop",
+        aliases=[
+            "stop"
+        ]
+    )
     async def stop(self, ctx):
         player = music.get_player(guild_id=ctx.guild.id)
         if not player:
@@ -88,8 +128,15 @@ class MusicSystem(commands.Cog):
         await ctx.send("Stopped")
         return
 
-    @commands.command()
-    async def loop(self, ctx):
+    @commands.command(
+        name="Loop The Current Song Command",
+        description="A command to loop the currently playing command.",
+        usage="loop",
+        aliases=[
+            "loop"
+        ]
+    )
+    async def _loop(self, ctx):
         player = music.get_player(guild_id=ctx.guild.id)
         song = await player.toggle_song_loop()
         if song.is_looping:
@@ -99,8 +146,15 @@ class MusicSystem(commands.Cog):
             await ctx.send(f"Disabled loop for {song.name}")
             return
 
-    @commands.command()
-    async def queue(self, ctx):
+    @commands.command(
+        name="View Queue Command",
+        description="A command to see the current queue.",
+        usage="queue",
+        aliases=[
+            "queue"
+        ]
+    )
+    async def _queue(self, ctx):
         player = music.get_player(guild_id=ctx.guild.id)
         if not player:
             return await ctx.send("I don't think I am playing anything!")
@@ -108,7 +162,10 @@ class MusicSystem(commands.Cog):
         return
 
     @commands.command(
-        aliases = [
+        name="View Now Playing Command",
+        description="A command to see which song is currently being played.",
+        usage="nowplaying",
+        aliases=[
             "np",
             "nowplaying"
         ]
@@ -121,8 +178,15 @@ class MusicSystem(commands.Cog):
         await ctx.send(song.name)
         return
 
-    @commands.command()
-    async def skip(self, ctx):
+    @commands.command(
+        name="Skip the Current Song Command",
+        description="A command which skips the currently playing song.",
+        usage="skip",
+        aliases=[
+            "skip"
+        ]
+    )
+    async def _skip(self, ctx):
         player = music.get_player(guild_id=ctx.guild.id)
         if not player:
             return await ctx.send("I don't think I am playing anything!")
@@ -134,8 +198,15 @@ class MusicSystem(commands.Cog):
             await ctx.send(f"Skipped {data[0].name}")
             return
 
-    @commands.command()
-    async def volume(self, ctx, vol):
+    @commands.command(
+        name="Volume Command",
+        description="A command to change the volume of the music.",
+        usage="volume <0-100>",
+        aliases=[
+            "volume"
+        ]
+    )
+    async def _volume(self, ctx, vol):
         player = music.get_player(guild_id=ctx.guild.id)
         if not player:
             return await ctx.send("I don't think I am playing anything!")
@@ -147,8 +218,15 @@ class MusicSystem(commands.Cog):
         await ctx.send(f"Changed volume for {song.name} to {volume * 100}%")
         return
 
-    @commands.command()
-    async def remove(self, ctx, index):
+    @commands.command(
+        name="Remove a Song From Queue Command",
+        description="A command to remove a song from the queue.",
+        usage="remove <index>",
+        aliases=[
+            "remove"
+        ]
+    )
+    async def _remove(self, ctx, index):
         player = music.get_player(guild_id=ctx.guild.id)
         if not player:
             return await ctx.send("I don't think I am playing anything!")
