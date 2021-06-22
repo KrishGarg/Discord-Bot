@@ -7,9 +7,16 @@ class HelpCommand(commands.Cog):
         self.bot = bot
 
     # Help Command!
-    @commands.command()
+    @commands.command(
+        name="Help Command",
+        description="A command to display help for all other commands!",
+        usage="help [command]",
+        aliases=[
+            "help"
+        ]
+    )
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def help(self, ctx, cmd=None):
+    async def _help(self, ctx, cmd=None):
         await ctx.send("S00n:tm:")
 
 def setup(bot):
