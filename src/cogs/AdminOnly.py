@@ -12,6 +12,7 @@ class AdminOnly(commands.Cog):
     async def logout(self, ctx):
         await ctx.send(f"See you later {ctx.author.mention}!")
         self.bot.db.close()
+        await self.bot.session.close()
         await self.bot.close()
 
     # Emergency shutdown error handling

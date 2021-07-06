@@ -140,20 +140,19 @@ class OtherModCmds(commands.Cog):
             url = str(arg.url)
         else:
             url = arg
-        async with aiohttp.ClientSession() as ses:
-            async with ses.get(url) as r:
-                try:
-                    if r.status in range(200, 299):
-                        img = BytesIO(await r.read())
-                        bytes = img.getvalue()
-                        emoji = await ctx.guild.create_custom_emoji(image=bytes, name=name)
-                        await ctx.send("Successfully created the emoji.")
-                        await ctx.send(str(emoji))
-                        return
-                    else:
-                        ctx.send(f"Some error happened when trying to get the image from the url. Response: {r.status}")
-                except discord.HTTPException:
-                    await ctx.send("An error occurred. Common causes: File size too large, un-allowed characters in emoji name, 50 emoji limit.")
+        async with self.bot.session.get(url) as r:
+            try:
+                if r.status in range(200, 299):
+                    img = BytesIO(await r.read())
+                    bytes = img.getvalue()
+                    emoji = await ctx.guild.create_custom_emoji(image=bytes, name=name)
+                    await ctx.send("Successfully created the emoji.")
+                    await ctx.send(str(emoji))
+                    return
+                else:
+                    ctx.send(f"Some error happened when trying to get the image from the url. Response: {r.status}")
+            except discord.HTTPException:
+                await ctx.send("An error occurred. Common causes: File size too large, un-allowed characters in emoji name, 50 emoji limit.")
     
     @steal.error
     async def steal_error(self, ctx, error):

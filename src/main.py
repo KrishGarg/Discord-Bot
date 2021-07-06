@@ -1,4 +1,5 @@
 import os
+import aiohttp
 from dotenv import load_dotenv
 import discord
 from discord.ext import commands
@@ -63,6 +64,8 @@ def pref_help(guild_id: int):
 
 
 bot.prefix = pref_help
+
+bot.session = aiohttp.ClientSession()
 
 if __name__ == '__main__':
     print(os.listdir('/'))
