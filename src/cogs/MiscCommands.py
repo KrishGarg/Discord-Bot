@@ -70,56 +70,35 @@ class MiscCommands(commands.Cog):
         ]
     )
     @commands.cooldown(1, 10, commands.BucketType.user)
-    async def _avatar(self, ctx, *, para=None):
-        while True:
-            try:
-                mention1 = para
-                a = mention1
-                if "<@" in mention1 and ">" in mention1:
-                    a = a.replace("<", "")
-                    a = a.replace(">", "")
-                    a = a.replace("@", "")
+    async def _avatar(self, ctx, member: discord.Member = None):
+        url = str(member.avatar_url)
+        png, jpg, webp = url, url, url
 
-                if "!" in a:
-                    a = a.replace("!", "")
+        giforwebp = ""
 
-            except Exception:
-                the_user = ctx.message.author
+        if ".webp" in url:
+            png = png.replace(".webp", ".png")
+            jpg = jpg.replace(".webp", ".jpg")
+            giforwebp = "webp"
 
-            else:
-                the_user = await self.bot.fetch_user(int(a))
+        if ".gif" in url:
+            png = png.replace(".gif", ".png")
+            jpg = jpg.replace(".gif", ".jpg")
+            giforwebp = "gif"
 
-            url = str(the_user.avatar_url)
-            png = url
-            jpg = url
-            webp = url
+        the_embed = discord.Embed(title=f'Avatar for {member}',
+                                    description="",
+                                    color=0x00ff00)
+        the_embed.add_field(
+            name="***__Click below to open the image in your browser!__***",
+            value=f"[png]({png}) | [jpg]({jpg}) | [{giforwebp}]({webp})")
+        the_embed.set_image(url=member.avatar_url)
+        the_embed.set_footer(
+            text=f"{self.bot.user.name}",
+            icon_url=f"{self.bot.user.avatar_url}"
+        )
 
-            giforwebp = ""
-
-            if ".webp" in url:
-                png = png.replace(".webp", ".png")
-                jpg = jpg.replace(".webp", ".jpg")
-                giforwebp = "webp"
-
-            if ".gif" in url:
-                png = png.replace(".gif", ".png")
-                jpg = jpg.replace(".gif", ".jpg")
-                giforwebp = "gif"
-
-            the_embed = discord.Embed(title=f'Avatar for {the_user}',
-                                      description="",
-                                      color=0x00ff00)
-            the_embed.add_field(
-                name="***__Click below to open the image in your browser!__***",
-                value=f"[png]({png}) | [jpg]({jpg}) | [{giforwebp}]({webp})")
-            the_embed.set_image(url=the_user.avatar_url)
-            the_embed.set_footer(
-                text=f"{self.bot.user.name}",
-                icon_url=f"{self.bot.user.avatar_url}"
-            )
-
-            await ctx.send(embed=the_embed)
-            return
+        return await ctx.send(embed=the_embed)
 
     # Avatar command error handling
     @_avatar.error
