@@ -110,9 +110,8 @@ class KickBanUnban(commands.Cog):
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def unban(self, ctx, user_id: int, *, reason1="None Given"):
         try:
-            user = await self.bot.fetch_user(user_id)
             await ctx.guild.unban(
-                user=user,
+                user=discord.Object(user_id),
                 reason=
                 f'{reason1} -Unbanned by {ctx.author.name}#{ctx.author.discriminator}'
             )
