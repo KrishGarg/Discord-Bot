@@ -1,9 +1,6 @@
 import asyncio
 import discord
 from discord.ext import commands
-import typing
-from io import BytesIO
-import aiohttp
 import re
 from cogs.utils.converters import EmojiURL
 
@@ -200,7 +197,7 @@ class OtherModCmds(commands.Cog):
         if emoji_count >= ctx.guild.emoji_limit:
             return await ctx.send('There are no more emoji slots in this server.')
 
-        async with self.bot.session.get(emoji.url) as resp:
+        async with self.bot.ses.get(emoji.url) as resp:
             if resp.status >= 400:
                 return await ctx.send('Could not fetch the image.')
             if int(resp.headers['Content-Length']) >= (256 * 1024):
