@@ -1,28 +1,16 @@
 import time
-# for cycling the statuses
-from itertools import cycle
-
 import discord
-from discord.ext import commands, tasks
-
-# Statuses to cycle through
-statuses = cycle(['$help ← Default', 'Sup. I said SUP!'])
-
+from discord.ext import commands
 
 class Events(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
-
-    # To change the status of the bot every 10 seconds
-    @tasks.loop(seconds=10)
-    async def change_status(self):
-        await self.bot.change_presence(status=discord.Status.dnd, activity=discord.Game(next(statuses)))
+        self.bot: commands.Bot = bot
 
     # On the bot being ready, it does somethings.
     @commands.Cog.listener()
     async def on_ready(self):
         print("We have logged in as {0.user}".format(self.bot))
-        self.change_status.start()
+        await self.bot.change_presence(status=discord.Status.dnd, activity=discord.Game('$help ← Default'))
         start_time = time.time()
         self.bot._start_time = start_time
 
@@ -38,7 +26,7 @@ class Events(commands.Cog):
             ctx = await self.bot.get_context(message)
             if ctx.valid:
                 return
-            await message.channel.send(f"My prefix for this server is `{self.bot.prefix(message.guild.id)}`.")
+            await message.channel.send(f"My prefix for this server is `{await self.bot.prefix(message.guild.id)}`.")
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
@@ -57,7 +45,7 @@ class Events(commands.Cog):
         
         # Soon will be changed and global error handling s00n:tm:
         if isinstance(error, commands.MissingRequiredArgument):
-            return await ctx.send(f"`{self.bot.prefix(ctx.guild.id)}{ctx.command.aliases[0]} {ctx.command.signature}`.")
+            return await ctx.send(f"`{await self.bot.prefix(ctx.guild.id)}{ctx.command.aliases[0]} {ctx.command.signature}`.")
 
 def setup(bot):
     bot.add_cog(Events(bot))

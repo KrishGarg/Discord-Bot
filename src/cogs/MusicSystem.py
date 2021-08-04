@@ -70,7 +70,7 @@ class MusicSystem(commands.Cog):
                 await ctx.send(f"Queued {song.name}")
                 return
         except NotConnectedToVoice:
-            return await ctx.send(f"The bot is not in a voice channel! Please join a voice channel and run `{self.bot.prefix(ctx.guild.id)}join`.")
+            return await ctx.send(f"The bot is not in a voice channel! Please join a voice channel and run `{await self.bot.prefix(ctx.guild.id)}join`.")
 
     @_play.error
     async def play_error(self, ctx, error):

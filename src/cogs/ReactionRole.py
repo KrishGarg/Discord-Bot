@@ -5,7 +5,6 @@ class ReactionRole(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.db = bot.db
-        self.c = bot.c
 
     @commands.command(
         name="ReactRole Command",
@@ -21,8 +20,8 @@ class ReactionRole(commands.Cog):
     async def _reactrole(self, ctx, emoji, role: discord.Role, messageid):
         msg = await ctx.channel.fetch_message(messageid)
         await msg.add_reaction(emoji)
-        self.c.execute("INSERT INTO reactrole VALUES (?,?,?,?,?)", (role.name, role.id, str(emoji), messageid, ctx.guild.id))
-        self.db.commit()
+        await self.db.execute("INSERT INTO reactrole VALUES (?,?,?,?,?)", (role.name, role.id, str(emoji), messageid, ctx.guild.id))
+        await self.db.commit()
 
         await ctx.message.delete()
 
@@ -34,7 +33,7 @@ class ReactionRole(commands.Cog):
 
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
-                f"I think you missed some arguments. I know this is a complicated command so to check the correct syntax, run `{self.bot.prefix(ctx.guild.id)}help moderation` !")
+                f"I think you missed some arguments. I know this is a complicated command so to check the correct syntax, run `{await self.bot.prefix(ctx.guild.id)}help moderation` !")
             return
 
         if isinstance(error, commands.BadArgument):
@@ -46,8 +45,8 @@ class ReactionRole(commands.Cog):
         if payload.member.bot:
             return
 
-        self.c.execute("SELECT * FROM reactrole WHERE guild_id = ?", (payload.guild_id,))
-        data = self.c.fetchall()
+        cur = await self.c.execute("SELECT * FROM reactrole WHERE guild_id = ?", (payload.guild_id,))
+        data = await cur.fetchall()
 
         if not data:
             return
@@ -59,8 +58,8 @@ class ReactionRole(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload):
-        self.c.execute("SELECT * FROM reactrole WHERE guild_id = ?", (payload.guild_id,))
-        data = self.c.fetchall()
+        cur = await self.db.execute("SELECT * FROM reactrole WHERE guild_id = ?", (payload.guild_id,))
+        data = await cur.fetchall()
 
         if not data:
             return

@@ -5,7 +5,6 @@ class WarningSys(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.db = bot.db
-        self.c = bot.c
 
     # Warn command
     @commands.command(
@@ -29,11 +28,11 @@ class WarningSys(commands.Cog):
                 await ctx.send("Please provide a reason")
                 return
 
-            self.c.execute("INSERT INTO warnings (user_id,reason,guild_id) VALUES (?,?,?)", (user.id, reason, ctx.guild.id))
-            self.db.commit()
+            await self.db.execute("INSERT INTO warnings (user_id,reason,guild_id) VALUES (?,?,?)", (user.id, reason, ctx.guild.id))
+            await self.db.commit()
 
             await ctx.send(
-                f"Warned Them! To check their warnings, use the `{self.bot.prefix(ctx.guild.id)}warnings` command."
+                f"Warned Them! To check their warnings, use the `{await self.bot.prefix(ctx.guild.id)}warnings` command."
             )
 
             try:
@@ -88,12 +87,11 @@ class WarningSys(commands.Cog):
     )
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def _warnings(self, ctx, user: discord.User):
-        self.c.execute("SELECT * FROM warnings WHERE user_id = ? AND guild_id = ?", (user.id, ctx.guild.id))
-        user_reports = self.c.fetchall()
+        cur = await self.db.execute("SELECT * FROM warnings WHERE user_id = ? AND guild_id = ?", (user.id, ctx.guild.id))
+        user_reports = await cur.fetchall()
 
         if not user_reports:
-            await ctx.send(f"{user.name} has never been reported!")
-            return
+            return await ctx.send(f"{user.name} has never been reported!")
 
         else:
             reasons = [x[1] for x in user_reports]
