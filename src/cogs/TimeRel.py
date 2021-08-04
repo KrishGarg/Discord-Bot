@@ -9,9 +9,16 @@ class TimeRel(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(
+        name="Timer Command",
+        description="A command to set a timer.",
+        usage="timer <time>",
+        aliases=[
+            "timer"
+        ]
+    )
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def timer(self, ctx, time):
+    async def _timer(self, ctx, time):
         if str(time).endswith('s'):
             timeinsec = int(str(time[:-1]))
         elif str(time).endswith('m'):
@@ -38,8 +45,8 @@ class TimeRel(commands.Cog):
         await themsg.delete()
         await ctx.send(f'{ctx.author.mention}, Timer is Up!')
 
-    @timer.error
-    async def timer_error(self, ctx, error):
+    @_timer.error
+    async def _timer_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("Tell me how long the timer should last in seconds too!")
             return
@@ -48,9 +55,16 @@ class TimeRel(commands.Cog):
             return
 
     # Uptime Command
-    @commands.command()
+    @commands.command(
+        name="Uptime Command",
+        description="A command to know the bot's uptime.",
+        usage="uptime",
+        aliases=[
+            "uptime"
+        ]
+    )
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def uptime(self, ctx):
+    async def _uptime(self, ctx):
         current_time = time.time()
         difference = int(round(current_time - self.bot._start_time))
         text = str(datetime.timedelta(seconds=difference))

@@ -7,7 +7,15 @@ class ReactionRole(commands.Cog):
         self.db = bot.db
         self.c = bot.c
 
-    @commands.command(aliases=['rr', 'reactrole'])
+    @commands.command(
+        name="ReactRole Command",
+        description="A command to set-up reaction role on a message.",
+        usage="rr <emoji> <role> <message_id>",
+        aliases=[
+            'rr', 
+            'reactrole'
+        ]
+    )
     @commands.has_permissions(manage_roles=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def _reactrole(self, ctx, emoji, role: discord.Role, messageid):
