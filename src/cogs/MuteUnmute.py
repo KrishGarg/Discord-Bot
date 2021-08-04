@@ -9,10 +9,17 @@ class MuteUnmute(commands.Cog):
         self.bot = bot
 
     # Create mute role command
-    @commands.command()
+    @commands.command(
+        name="Create the Muterole command",
+        description="A command to create the muterole for the server.",
+        usage="muterole",
+        aliases=[
+            "muterole"
+        ]
+    )
     @commands.has_permissions(manage_roles=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def muterole(self, ctx):
+    async def _muterole(self, ctx):
         if discord.utils.get(ctx.guild.roles, name="Muted"):
             await ctx.send("Hey looks like there is already a 'Muted' role!")
             return
@@ -61,7 +68,7 @@ class MuteUnmute(commands.Cog):
         )
         return
 
-    @muterole.error
+    @_muterole.error
     async def muterole_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("You ain't got enough permissions!")
@@ -72,10 +79,17 @@ class MuteUnmute(commands.Cog):
             return
 
     # Mute command
-    @commands.command()
+    @commands.command(
+        name="Mute Command",
+        description="A command to mute a person.",
+        usage="mute <member>",
+        aliases=[
+            "mute"
+        ]
+    )
     @commands.has_permissions(manage_roles=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def mute(self, ctx, user: discord.Member = None):
+    async def _mute(self, ctx, user: discord.Member = None):
 
         if ctx.author.top_role.position <= user.top_role.position:
             await ctx.send("Lol you have mute perms but you are not as powerful as the guy you are trying to mute!")
@@ -111,7 +125,7 @@ You will stay muted till a moderator unmutes you!
         except:
             pass
 
-    @mute.error
+    @_mute.error
     async def mute_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("You ain't got enough permissions!")
@@ -136,10 +150,17 @@ You will stay muted till a moderator unmutes you!
             await channel.set_permissions(discord.utils.get(channel.guild.roles, name="Muted"), send_messages=False,
                                           add_reactions=False)
 
-    @commands.command()
+    @commands.command(
+        name="Unmute Command",
+        description="A command to unmute a person.",
+        usage="unmute <member>",
+        aliases=[
+            "unmute"
+        ]
+    )
     @commands.has_permissions(manage_roles=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def unmute(self, ctx, user: discord.Member):
+    async def _unmute(self, ctx, user: discord.Member):
 
         if ctx.author.top_role.position <= user.top_role.position:
             await ctx.send("Lol you have unmute perms but you are not as powerful as the guy you are trying to unmute!")
@@ -166,7 +187,7 @@ You will stay muted till a moderator unmutes you!
             await ctx.send("There was an error while unmuting that user!")
             return
 
-    @unmute.error
+    @_unmute.error
     async def unmute_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("You ain't got enough permissions!")
@@ -185,10 +206,17 @@ You will stay muted till a moderator unmutes you!
             return
 
     # TempMute command
-    @commands.command()
+    @commands.command(
+        name="TempMute Command",
+        description="A command to temporarily mute a member.",
+        usage="tempmute <member> <mutetime>",
+        aliases=[
+            "tempmute"
+        ]
+    )
     @commands.has_permissions(manage_roles=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def tempmute(self, ctx, user: discord.Member, mutetime):
+    async def _tempmute(self, ctx, user: discord.Member, mutetime):
 
         if ctx.author.top_role.position <= user.top_role.position:
             await ctx.send("Lol you have temp mute perms but you are not as powerful as the guy you are trying to temp mute!")
@@ -274,7 +302,7 @@ You will stay muted till a moderator unmutes you!
         except:
             pass
 
-    @tempmute.error
+    @_tempmute.error
     async def tempmute_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Looks like you don't have enough permission to mute a person!")
