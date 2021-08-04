@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 import discord
 from discord.ext import commands
 import logging
-import sqlite3
 
 from cogs.CustomPrefix import get_prefix
 
@@ -26,35 +25,6 @@ bot.owner_ids = {453875226757955585, 506093256501755904}
 
 bot.DEFAULT_PREFIX = "$"
 
-bot.db = sqlite3.connect('main.db')
-bot.c = bot.db.cursor()
-
-bot.c.execute("""
-        CREATE TABLE IF NOT EXISTS prefixes (
-            guild_id INTEGER,
-            prefix TEXT
-        )""")
-bot.db.commit()
-
-bot.c.execute("""
-        CREATE TABLE IF NOT EXISTS reactrole (
-            role_name TEXT,
-            role_id INTEGER,
-            emoji TEXT,
-            message_id INTEGER,
-            guild_id INTEGER
-        )""")
-bot.db.commit()
-
-bot.c.execute("""
-        CREATE TABLE IF NOT EXISTS warnings (
-            user_id INTEGER,
-            reason TEXT,
-            guild_id INTEGER
-        )""")
-bot.db.commit()
-
-
 def pref_help(guild_id: int):
     bot.c.execute("SELECT prefix FROM prefixes WHERE guild_id = ?", (guild_id,))
     pref = bot.c.fetchone()
@@ -65,11 +35,11 @@ def pref_help(guild_id: int):
 
 bot.prefix = pref_help
 
-bot.session = aiohttp.ClientSession()
+bot.ses = aiohttp.ClientSession()
 
 if __name__ == '__main__':
     print(os.listdir('/'))
-    for filename in os.listdir('./cogs'):
+    for filename in os.listdir('/cogs'):
         if filename.endswith('.py'):
             bot.load_extension(f'cogs.{filename[:-3]}')
             print(f"Loaded {filename[:-3]}")

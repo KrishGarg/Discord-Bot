@@ -1,30 +1,46 @@
 import time
-# for cycling the statuses
-from itertools import cycle
-
 import discord
-from discord.ext import commands, tasks
-
-# Statuses to cycle through
-statuses = cycle(['$help ← Default', 'Sup. I said SUP!'])
-
+from discord.ext import commands
+import aiosqlite
 
 class Events(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
-
-    # To change the status of the bot every 10 seconds
-    @tasks.loop(seconds=10)
-    async def change_status(self):
-        await self.bot.change_presence(status=discord.Status.dnd, activity=discord.Game(next(statuses)))
+        self.bot: commands.Bot = bot
 
     # On the bot being ready, it does somethings.
     @commands.Cog.listener()
     async def on_ready(self):
         print("We have logged in as {0.user}".format(self.bot))
-        self.change_status.start()
+        await self.bot.change_presence(status=discord.Status.dnd, activity=discord.Game('$help ← Default'))
         start_time = time.time()
         self.bot._start_time = start_time
+        
+        self.bot.db = await aiosqlite.connect('main.db')
+        
+        self.bot.db.execute("""
+                CREATE TABLE IF NOT EXISTS prefixes (
+                    guild_id INTEGER,
+                    prefix TEXT
+                )""")
+        self.bot.db.commit()
+
+        self.bot.db.execute("""
+                CREATE TABLE IF NOT EXISTS reactrole (
+                    role_name TEXT,
+                    role_id INTEGER,
+                    emoji TEXT,
+                    message_id INTEGER,
+                    guild_id INTEGER
+                )""")
+        self.bot.db.commit()
+
+        self.bot.db.execute("""
+                CREATE TABLE IF NOT EXISTS warnings (
+                    user_id INTEGER,
+                    reason TEXT,
+                    guild_id INTEGER
+                )""")
+        self.bot.db.commit()
 
         # Sends pings whenever it is rebooted.
         guild = self.bot.get_guild(770760891394031646)
