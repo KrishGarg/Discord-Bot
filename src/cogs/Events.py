@@ -34,12 +34,11 @@ class Events(commands.Cog):
     # To make the bot tell his prefix when pinged/mentioned
     @commands.Cog.listener()
     async def on_message(self, message):
-        if self.bot.user.mentioned_in(message):
-            if not message.mention_everyone:
-                ctx = await self.bot.get_context(message)
-                if ctx.valid:
-                    return
-                await message.channel.send(f"My prefix for this server is `{self.bot.prefix(message.guild.id)}`.")
+        if self.bot.user.mentioned_in(message) and not message.mention_everyone:
+            ctx = await self.bot.get_context(message)
+            if ctx.valid:
+                return
+            await message.channel.send(f"My prefix for this server is `{self.bot.prefix(message.guild.id)}`.")
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
@@ -56,6 +55,7 @@ class Events(commands.Cog):
         if isinstance(error, commands.CommandOnCooldown):
             return await ctx.send(f"The command is on cooldown! Try again in {error.retry_after :,.2f} seconds.")
         
+        # Soon will be changed and global error handling s00n:tm:
         if isinstance(error, commands.MissingRequiredArgument):
             return await ctx.send(f"`{self.bot.prefix(ctx.guild.id)}{ctx.command.aliases[0]} {ctx.command.signature}`.")
 

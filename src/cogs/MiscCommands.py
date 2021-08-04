@@ -1,9 +1,7 @@
-import datetime
-import time
-import requests
-from requests.exceptions import HTTPError
 import discord
+import requests
 from discord.ext import commands
+from requests.exceptions import HTTPError
 
 
 class MiscCommands(commands.Cog):
@@ -11,7 +9,18 @@ class MiscCommands(commands.Cog):
         self.bot = bot
 
     # Server Info Command!
-    @commands.command(aliases=['svinfo', 'serverinfo', 'infoserver', 'infosv', 'si'])
+    @commands.command(
+        name="Server Information Command",
+        description="A command to see the server's basic information.",
+        usage="svinfo",
+        aliases=[
+            'svinfo',
+            'serverinfo',
+            'infoserver',
+            'infosv',
+            'si'
+        ]
+    )
     @commands.cooldown(1, 20, commands.BucketType.user)
     async def _svinfo(self, ctx):
         the_embed = discord.Embed(title="Server Info!", color=0x00ff00)
@@ -51,58 +60,45 @@ class MiscCommands(commands.Cog):
         await ctx.send(embed=the_embed)
 
     # Avatar command!
-    @commands.command(aliases=['avatar', 'av'])
+    @commands.command(
+        name="Avatar Command",
+        description="A command to see someone's avatar. Also gives options to view the avatar in the preferred format in the browser.",
+        usage="avatar [member]",
+        aliases=[
+            'avatar',
+            'av'
+        ]
+    )
     @commands.cooldown(1, 10, commands.BucketType.user)
-    async def _avatar(self, ctx, *, para=None):
-        while True:
-            try:
-                mention1 = para
-                a = mention1
-                if "<@" in mention1 and ">" in mention1:
-                    a = a.replace("<", "")
-                    a = a.replace(">", "")
-                    a = a.replace("@", "")
+    async def _avatar(self, ctx, member: discord.Member = None):
+        url = str(member.avatar_url)
+        png, jpg, webp = url, url, url
 
-                if "!" in a:
-                    a = a.replace("!", "")
+        giforwebp = ""
 
-            except Exception:
-                the_user = ctx.message.author
+        if ".webp" in url:
+            png = png.replace(".webp", ".png")
+            jpg = jpg.replace(".webp", ".jpg")
+            giforwebp = "webp"
 
-            else:
-                the_user = await self.bot.fetch_user(int(a))
+        if ".gif" in url:
+            png = png.replace(".gif", ".png")
+            jpg = jpg.replace(".gif", ".jpg")
+            giforwebp = "gif"
 
-            url = str(the_user.avatar_url)
-            png = url
-            jpg = url
-            webp = url
+        the_embed = discord.Embed(title=f'Avatar for {member}',
+                                    description="",
+                                    color=0x00ff00)
+        the_embed.add_field(
+            name="***__Click below to open the image in your browser!__***",
+            value=f"[png]({png}) | [jpg]({jpg}) | [{giforwebp}]({webp})")
+        the_embed.set_image(url=member.avatar_url)
+        the_embed.set_footer(
+            text=f"{self.bot.user.name}",
+            icon_url=f"{self.bot.user.avatar_url}"
+        )
 
-            giforwebp = ""
-
-            if ".webp" in url:
-                png = png.replace(".webp", ".png")
-                jpg = jpg.replace(".webp", ".jpg")
-                giforwebp = "webp"
-
-            if ".gif" in url:
-                png = png.replace(".gif", ".png")
-                jpg = jpg.replace(".gif", ".jpg")
-                giforwebp = "gif"
-
-            the_embed = discord.Embed(title=f'Avatar for {the_user}',
-                                      description="",
-                                      color=0x00ff00)
-            the_embed.add_field(
-                name="***__Click below to open the image in your browser!__***",
-                value=f"[png]({png}) | [jpg]({jpg}) | [{giforwebp}]({webp})")
-            the_embed.set_image(url=the_user.avatar_url)
-            the_embed.set_footer(
-                text=f"{self.bot.user.name}",
-                icon_url=f"{self.bot.user.avatar_url}"
-            )
-
-            await ctx.send(embed=the_embed)
-            return
+        return await ctx.send(embed=the_embed)
 
     # Avatar command error handling
     @_avatar.error
@@ -112,17 +108,32 @@ class MiscCommands(commands.Cog):
             return
 
     # Ping/Latency Command!
-    @commands.command()
+    @commands.command(
+        name="Ping Command",
+        description="A command which returns the latency.",
+        usage="ping",
+        aliases=[
+            "ping",
+            "latency"
+        ]
+    )
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def ping(self, ctx):
+    async def _ping(self, ctx):
         ping = round(self.bot.latency * 1000)
         await ctx.send(f":ping_pong: Pong! Latency is {ping}ms!")
         return
 
     # Joke Command
-    @commands.command()
+    @commands.command(
+        name="Joke Command -1",
+        description="A command which returns a random joke.",
+        usage="joke",
+        aliases=[
+            "joke"
+        ]
+    )
     @commands.cooldown(1, 20, commands.BucketType.user)
-    async def joke(self, ctx):
+    async def _joke(self, ctx):
         try:
             joke = requests.get('https://official-joke-api.appspot.com/random_joke').json()
         except HTTPError:
@@ -135,9 +146,16 @@ class MiscCommands(commands.Cog):
 ''')
 
     # Backup Joke Command
-    @commands.command()
+    @commands.command(
+        name="Joke Command -2",
+        description="Also a joke command.",
+        usage="joke2",
+        aliases=[
+            "joke2"
+        ]
+    )
     @commands.cooldown(1, 20, commands.BucketType.user)
-    async def joke2(self, ctx):
+    async def _joke2(self, ctx):
         try:
             joke = requests.get('https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,racist,sexist,explicit').json()
         except HTTPError:
@@ -156,9 +174,16 @@ class MiscCommands(commands.Cog):
                 return
 
     # Quote Command
-    @commands.command()
+    @commands.command(
+        name="Quote Command",
+        description="An quote command which returns a random quote with its author.",
+        usage="quote",
+        aliases=[
+            "quote"
+        ]
+    )
     @commands.cooldown(1, 20, commands.BucketType.user)
-    async def quote(self, ctx):
+    async def _quote(self, ctx):
         try:
             try:
                 quote = requests.get('http://api.quotable.io/random').json()

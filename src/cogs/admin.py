@@ -108,8 +108,17 @@ class Admin(commands.Cog):
             return f'```py\n{e.__class__.__name__}: {e}\n```'
         return f'```py\n{e.text}{"^":>{e.offset}}\n{e.__class__.__name__}: {e}```'
 
-    @commands.command(hidden=False)
-    async def load(self, ctx, *, module):
+
+    @commands.command(
+        name="Load Module",
+        description="A command used to load a cog/extension. Bot Owner Only.",
+        usage="load <module>",
+        aliases=[
+            "load"
+        ],
+        hidden=True
+    )
+    async def _load(self, ctx, *, module):
         """Loads a module."""
         try:
             self.bot.load_extension(module)
@@ -118,8 +127,17 @@ class Admin(commands.Cog):
         else:
             await ctx.send('\N{OK HAND SIGN}')
 
-    @commands.command(hidden=False)
-    async def unload(self, ctx, *, module):
+
+    @commands.command(
+        name="Unload Module",
+        description="A command used to inload a cog/extension. Bot Owner Only.",
+        usage="unload <module>",
+        aliases=[
+            "unload"
+        ],
+        hidden=True
+    )
+    async def _unload(self, ctx, *, module):
         """Unloads a module."""
         try:
             self.bot.unload_extension(module)
@@ -128,7 +146,17 @@ class Admin(commands.Cog):
         else:
             await ctx.send('\N{OK HAND SIGN}')
 
-    @commands.group(name='reload', hidden=False, invoke_without_command=True)
+
+    @commands.group(
+        name='Reload Module', 
+        hidden=True, 
+        invoke_without_command=True,
+        description="A command to reload a module. Bot Owner Only.",
+        usage="reload <module>",
+        aliases=[
+            "reload"
+        ],
+    )
     async def _reload(self, ctx, *, module):
         """Reloads a module."""
         try:
@@ -138,7 +166,17 @@ class Admin(commands.Cog):
         else:
             await ctx.send('\N{OK HAND SIGN}')
 
-    @commands.command(pass_context=True, hidden=True, name='eval')
+
+    @commands.command(
+        pass_context=True, 
+        hidden=True, 
+        name='Evaluate',
+        description="A command to evaluate some python code. Bot Owner Only.",
+        usage="eval <code (preferrably in code blocks)>",
+        aliases=[
+            "eval"
+        ]
+    )
     async def _eval(self, ctx, *, body: str):
         """Evaluates a code"""
 

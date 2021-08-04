@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from colour import Color
 from .custom_errors import *
+import yarl
 
 class NameToColorConverter(commands.Converter):
     """
@@ -39,3 +40,26 @@ class NameToColorConverter(commands.Converter):
             except TypeError:
                 raise NameToColorFail('Conversion to discord color failed.')
             return x
+        
+class EmojiURL:
+    def __init__(self, *, animated, url):
+        self.url = url
+        self.animated = animated
+
+    @classmethod
+    async def convert(cls, ctx, argument):
+        try:
+            partial = await commands.PartialEmojiConverter().convert(ctx, argument)
+        except commands.BadArgument:
+            try:
+                url = yarl.URL(argument)
+                if url.scheme not in ('http', 'https'):
+                    raise RuntimeError
+                path = url.path.lower()
+                if not path.endswith(('.png', '.jpeg', '.jpg', '.gif')):
+                    raise RuntimeError
+                return cls(animated=url.path.endswith('.gif'), url=url)
+            except Exception:
+                raise commands.BadArgument('Not a valid or supported emoji URL.') from None
+        else:
+            return cls(animated=partial.animated, url=str(partial.url))

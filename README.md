@@ -1,5 +1,6 @@
 # Discord-Bot
 # Docs: https://docs.mydiscordbot.ga/
+### I haven't been making any progress as I got school and I am waiting for discord.py 2.0 to come out. It is gonna have buttons, menus and a lot of other new features.
 ## Important Note: Some may ask why is this public. This will be explained later in the faqs. This will be a fully functional, all-purpose discord bot. <br><br>
 ## My plans have changed and now this is going to be a dynamic-multi-server-compatible bot. Don't worry, this will still be a open source bot.<br><br>
 ## If you still wish to host the bot on your own by rebranding it, you are more than welcome to do it for free but on one condition that in either the `ping` command or the `help` command, you link this repository. You can do it like: <br><br> In Embeds -> [Source Code](https://github.com/KrishGarg/Discord-Bot) <br>In Normal Messages -↓ <br>Link to bot's source code: <br>https://github.com/KrishGarg/Discord-Bot<br><br>*Link to the repository might change in future<br>I hope that you follow the above if you rebrand my code. :) <br><br>

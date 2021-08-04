@@ -18,9 +18,16 @@ class CustomPrefix(commands.Cog):
         self.db = bot.db
         self.c = bot.c
 
-    @commands.command()
+    @commands.command(
+        name="Prefix Changer/Viewer",
+        description="A command that helps the administrators of the server view/change the prefix for the guild. Please note that if you reinvite the bot, the prefix will change back to default.",
+        usage="prefix [new prefix]",
+        aliases=[
+            "prefix"
+        ]
+    )
     @commands.has_permissions(administrator=True)
-    async def prefix(self, ctx, new_prefix: str = None):
+    async def _prefix(self, ctx, new_prefix: str = None):
         old_pref = self.bot.prefix(ctx.guild.id)
         if not new_prefix:
             return await ctx.send(f"Prefix for this server is `{old_pref}`.")

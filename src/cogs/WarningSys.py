@@ -8,10 +8,17 @@ class WarningSys(commands.Cog):
         self.c = bot.c
 
     # Warn command
-    @commands.command()
+    @commands.command(
+        name="Warn Command",
+        description="A command to warn a member.",
+        usage="warn <member> [reason]",
+        aliases=[
+            "warn"
+        ]
+    )
     @commands.has_permissions(kick_members=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def warn(self, ctx, user: discord.Member, *reason: str):
+    async def _warn(self, ctx, user: discord.Member, *, reason: str):
 
         if ctx.author.top_role.position <= user.top_role.position:
             await ctx.send("Lol you have warn perms but you are not as powerful as the guy you are trying to warn!")
@@ -21,7 +28,6 @@ class WarningSys(commands.Cog):
             if not reason:
                 await ctx.send("Please provide a reason")
                 return
-            reason = ' '.join(reason)
 
             self.c.execute("INSERT INTO warnings (user_id,reason,guild_id) VALUES (?,?,?)", (user.id, reason, ctx.guild.id))
             self.db.commit()
@@ -51,8 +57,8 @@ class WarningSys(commands.Cog):
             raise commands.CommandError()
 
     # Warn command error handling
-    @warn.error
-    async def warn_error(self, ctx, error):
+    @_warn.error
+    async def _warn_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             text = "Sorry {}, you do not have permissions to do that!".format(
                 ctx.message.author)
@@ -72,9 +78,16 @@ class WarningSys(commands.Cog):
             return
 
     # Warnings command
-    @commands.command()
+    @commands.command(
+        name="Warnings Command",
+        description="A command to see the warnings of a member.",
+        usage="warnings <member>",
+        aliases=[
+            "warnings"
+        ]
+    )
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def warnings(self, ctx, user: discord.User):
+    async def _warnings(self, ctx, user: discord.User):
         self.c.execute("SELECT * FROM warnings WHERE user_id = ? AND guild_id = ?", (user.id, ctx.guild.id))
         user_reports = self.c.fetchall()
 
@@ -100,8 +113,8 @@ class WarningSys(commands.Cog):
             await ctx.send(embed=emb)
 
     # Warning command error handling
-    @warnings.error
-    async def warnings_error(self, ctx, error):
+    @_warnings.error
+    async def _warnings_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You missed some arguments looks like!")
             return
