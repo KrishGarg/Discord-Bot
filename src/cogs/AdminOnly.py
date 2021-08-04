@@ -21,8 +21,8 @@ class AdminOnly(commands.Cog):
     @commands.is_owner()
     async def _logout(self, ctx):
         await ctx.send(f"See you later {ctx.author.mention}!")
-        self.bot.db.close()
-        await self.bot.session.close()
+        await self.bot.db.close()
+        await self.bot.ses.close()
         await self.bot.close()
     
     @_logout.error
