@@ -1,7 +1,6 @@
 import time
 import discord
 from discord.ext import commands
-import aiosqlite
 
 class Events(commands.Cog):
     def __init__(self, bot):
@@ -14,33 +13,6 @@ class Events(commands.Cog):
         await self.bot.change_presence(status=discord.Status.dnd, activity=discord.Game('$help ← Default'))
         start_time = time.time()
         self.bot._start_time = start_time
-        
-        self.bot.db = await aiosqlite.connect('main.db')
-        
-        self.bot.db.execute("""
-                CREATE TABLE IF NOT EXISTS prefixes (
-                    guild_id INTEGER,
-                    prefix TEXT
-                )""")
-        self.bot.db.commit()
-
-        self.bot.db.execute("""
-                CREATE TABLE IF NOT EXISTS reactrole (
-                    role_name TEXT,
-                    role_id INTEGER,
-                    emoji TEXT,
-                    message_id INTEGER,
-                    guild_id INTEGER
-                )""")
-        self.bot.db.commit()
-
-        self.bot.db.execute("""
-                CREATE TABLE IF NOT EXISTS warnings (
-                    user_id INTEGER,
-                    reason TEXT,
-                    guild_id INTEGER
-                )""")
-        self.bot.db.commit()
 
         # Sends pings whenever it is rebooted.
         guild = self.bot.get_guild(770760891394031646)
@@ -54,7 +26,7 @@ class Events(commands.Cog):
             ctx = await self.bot.get_context(message)
             if ctx.valid:
                 return
-            await message.channel.send(f"My prefix for this server is `{self.bot.prefix(message.guild.id)}`.")
+            await message.channel.send(f"My prefix for this server is `{await self.bot.prefix(message.guild.id)}`.")
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
@@ -73,7 +45,7 @@ class Events(commands.Cog):
         
         # Soon will be changed and global error handling s00n:tm:
         if isinstance(error, commands.MissingRequiredArgument):
-            return await ctx.send(f"`{self.bot.prefix(ctx.guild.id)}{ctx.command.aliases[0]} {ctx.command.signature}`.")
+            return await ctx.send(f"`{await self.bot.prefix(ctx.guild.id)}{ctx.command.aliases[0]} {ctx.command.signature}`.")
 
 def setup(bot):
     bot.add_cog(Events(bot))
