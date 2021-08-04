@@ -126,7 +126,7 @@ You will stay muted till a moderator unmutes you!
             pass
 
     @_mute.error
-    async def mute_error(self, ctx, error):
+    async def _mute_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("You ain't got enough permissions!")
             return
@@ -188,7 +188,7 @@ You will stay muted till a moderator unmutes you!
             return
 
     @_unmute.error
-    async def unmute_error(self, ctx, error):
+    async def _unmute_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("You ain't got enough permissions!")
             return
@@ -303,7 +303,7 @@ You will stay muted till a moderator unmutes you!
             pass
 
     @_tempmute.error
-    async def tempmute_error(self, ctx, error):
+    async def _tempmute_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Looks like you don't have enough permission to mute a person!")
             return

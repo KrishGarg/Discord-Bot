@@ -1,19 +1,38 @@
-from time import sleep
+import asyncio
 import discord
 from discord.ext import commands
 import typing
 from io import BytesIO
 import aiohttp
+import re
+from cogs.utils.converters import EmojiURL
+
+EMOJI_REGEX = re.compile(r'<a?:.+?:([0-9]{15,21})>')
+EMOJI_NAME_REGEX = re.compile(r'[0-9a-zA-Z\_]{2,32}')
+
+def emoji_name(argument, *, regex=EMOJI_NAME_REGEX):
+    m = regex.match(argument)
+    if m is None:
+        raise commands.BadArgument('Invalid emoji name.')
+    return argument
+
 
 class OtherModCmds(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     # Find Message Command
-    @commands.command()
+    @commands.command(
+        name="Find Message Command",
+        description="A command to find a message in the same channel with the message id.",
+        usage="findmessage <message_id>",
+        aliases=[
+            "findmessage"
+        ]
+    )
     @commands.has_permissions(manage_messages=True)
     @commands.cooldown(1, 10, commands.BucketType.user)
-    async def findmessage(self, ctx, id1: int):
+    async def _findmessage(self, ctx, id1: int):
         try:
             the_msg = await ctx.channel.fetch_message(id1)
             await the_msg.reply(content="Gotcha!",mention_author=False)
@@ -21,8 +40,8 @@ class OtherModCmds(commands.Cog):
             raise commands.BadArgument()
 
     # Find message error handling
-    @findmessage.error
-    async def findmessage_error(self, ctx, error):
+    @_findmessage.error
+    async def _findmessage_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("You don't have the required permission!")
             return
@@ -34,10 +53,17 @@ class OtherModCmds(commands.Cog):
             return
 
     # Yes No Command!
-    @commands.command()
+    @commands.command(
+        name="Yes No Poll Command",
+        description="A command to make the bot send a message and add the tick and cross emojis to it.",
+        usage="yesno <text>",
+        aliases=[
+            "yesno"
+        ]
+    )
     @commands.has_permissions(manage_messages=True)
     @commands.cooldown(1, 10, commands.BucketType.user)
-    async def yesno(self, ctx, *, text: str):
+    async def _yesno(self, ctx, *, text: str):
         channel = ctx.channel
         await ctx.message.delete()
         sent = await channel.send(text)
@@ -46,8 +72,8 @@ class OtherModCmds(commands.Cog):
         return
 
     # Error handling for yes no comamnd
-    @yesno.error
-    async def yesno_error(self, ctx, error):
+    @_yesno.error
+    async def _yesno_error(self, ctx, error):
         # If user got no permission, then it sends this.
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("You don't have the permission to do so!")
@@ -58,23 +84,26 @@ class OtherModCmds(commands.Cog):
             await ctx.send("Yo you forgot the text!")
 
     # Add yes no command!
-    @commands.command()
+    @commands.command(
+        name="Add Yes No Command",
+        description="A command to add tick and cross emojis to an existing emojis.",
+        usage="addyesno <message_id>",
+        aliases=[
+            "addyesno"
+        ]
+    )
     @commands.has_permissions(manage_messages=True)
     @commands.cooldown(1, 10, commands.BucketType.user)
-    async def addyesno(self, ctx, the_id):
-        msgid = the_id
-        themsg = await ctx.fetch_message(int(msgid))
+    async def _addyesno(self, ctx, msgid: int):
+        themsg = await ctx.fetch_message(msgid)
         await ctx.message.delete()
         await themsg.add_reaction("<a:tick:809071236549443634>")
         await themsg.add_reaction("<a:cross2:809071453059153972>")
-        msg2 = await ctx.send("Added!")
-        sleep(3)
-        await msg2.delete()
-        return
+        await ctx.send("Added!", delete_after=3)
 
     # Error handling for Add yes no command
-    @addyesno.error
-    async def addyesno_error(self, ctx, error):
+    @_addyesno.error
+    async def _addyesno_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("You don't have enough permission to do so!")
             return
@@ -87,15 +116,22 @@ class OtherModCmds(commands.Cog):
             await ctx.send("Some error occured! Try again later.")
             return
 
-    @commands.command()
+    @commands.command(
+        name="Message Time Command",
+        description="A command to know the exact time, a message was sent.",
+        usage="msgtime <message_id>",
+        aliases=[
+            "msgtime"
+        ]
+    )
     @commands.has_permissions(manage_messages=True)
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def msgtime(self, ctx, id1: int):
+    async def _msgtime(self, ctx, id1: int):
         await ctx.send(f"Time (in UTC) is: {discord.utils.snowflake_time(id1)}")
         return
 
-    @msgtime.error
-    async def msgtime_error(self, ctx, error):
+    @_msgtime.error
+    async def _msgtime_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("First get enough permissions lol!")
             return
@@ -108,10 +144,17 @@ class OtherModCmds(commands.Cog):
             await ctx.send("You check the ID again!")
             return
 
-    @commands.command()
+    @commands.command(
+        name="Time difference Command",
+        description="A command to find the time difference between two sent messages.",
+        usage="timediff <message_id_1> <message_id_2>",
+        aliases=[
+            "timediff"
+        ]
+    )
     @commands.has_permissions(manage_messages=True)
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def timediff(self, ctx, id1: int, id2: int):
+    async def _timediff(self, ctx, id1: int, id2: int):
         datetime1 = discord.utils.snowflake_time(id1)
         datetime2 = discord.utils.snowflake_time(id2)
         if datetime1 > datetime2:
@@ -122,42 +165,58 @@ class OtherModCmds(commands.Cog):
         await ctx.send(f'Hours: {difference.seconds//3600}\nMinutes: {(difference.seconds//60)%60}\nSeconds: {difference.seconds}\nMicroseconds: {difference.microseconds}')
 
     # Say command
-    @commands.command()
+    @commands.command(
+        name="Say Command",
+        description="A command to make the bot say something.",
+        usage="say <text>",
+        aliases=[
+            "say"
+        ]
+    )
     @commands.has_permissions(administrator=True)
     @commands.cooldown(1, 10, commands.BucketType.user)
-    async def say(self, ctx, *, text: str):
-        x = text
-        if "{@}" in text:
-            x = text.replace("{@}", "@")
-        await ctx.send(x)
+    async def _say(self, ctx, *, text: str):
+        await ctx.send(text, allowed_mentions=discord.AllowedMentions(everyone=False))
         await ctx.message.delete()
         return
 
-    @commands.command()
-    @commands.has_permissions(manage_emojis=True)
-    async def steal(self, ctx, name: str, arg: typing.Union[discord.PartialEmoji, str]):
-        if isinstance(arg, discord.PartialEmoji):
-            url = str(arg.url)
-        else:
-            url = arg
-        async with aiohttp.ClientSession() as ses:
-            async with ses.get(url) as r:
+    @commands.command(
+        name="Steal command",
+        description="A command to steal an emoji.",
+        usage="steal <name> <emoji/url>",
+        aliases=[
+            "steal"
+        ]
+    )
+    async def _steal(self, ctx, name: emoji_name, *, emoji: EmojiURL):
+        """Create an emoji for the server under the given name.
+        You must have Manage Emoji permission to use this.
+        The bot must have this permission too.
+        """
+
+        reason = f'Action done by {ctx.author} (ID: {ctx.author.id})'
+
+        emoji_count = sum(e.animated == emoji.animated for e in ctx.guild.emojis)
+        if emoji_count >= ctx.guild.emoji_limit:
+            return await ctx.send('There are no more emoji slots in this server.')
+
+        async with self.bot.session.get(emoji.url) as resp:
+            if resp.status >= 400:
+                return await ctx.send('Could not fetch the image.')
+            if int(resp.headers['Content-Length']) >= (256 * 1024):
+                return await ctx.send('Image is too big.')
+            data = await resp.read()
+            coro = ctx.guild.create_custom_emoji(name=name, image=data, reason=reason)
+            async with ctx.typing():
                 try:
-                    if r.status in range(200, 299):
-                        img = BytesIO(await r.read())
-                        bytes = img.getvalue()
-                        emoji = await ctx.guild.create_custom_emoji(image=bytes, name=name)
-                        await ctx.send("Successfully created the emoji.")
-                        await ctx.send(str(emoji))
-                        return
-                    else:
-                        ctx.send(f"Some error happened when trying to get the image from the url. Response: {r.status}")
-                except discord.HTTPException:
-                    await ctx.send("An error occurred. Common causes: File size too large, un-allowed characters in emoji name, 50 emoji limit.")
-    
-    @steal.error
-    async def steal_error(self, ctx, error):
-        print(error)
+                    created = await asyncio.wait_for(coro, timeout=10.0)
+                except asyncio.TimeoutError:
+                    return await ctx.send('Sorry, the bot is rate limited or it took too long.')
+                except discord.HTTPException as e:
+                    return await ctx.send(f'Failed to create emoji somehow: {e}')
+                else:
+                    return await ctx.send(f'Created {created}')
+
 
 def setup(bot):
     bot.add_cog(OtherModCmds(bot))
