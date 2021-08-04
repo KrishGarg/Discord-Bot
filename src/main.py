@@ -6,7 +6,6 @@ import logging
 import aiosqlite
 import aiohttp
 from cogs.CustomPrefix import get_prefix
-import asyncio
 # Loading the .env file to use the token
 load_dotenv()
 
