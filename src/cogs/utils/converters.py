@@ -12,7 +12,6 @@ class NameToColorConverter(commands.Converter):
     object from the name, then we use its hex code to
     make the discord.Colour object.
     """
-    @classmethod
     async def convert(self, ctx, argument):
         try:
             c = Color(argument)
