@@ -6,8 +6,11 @@ import logging
 import aiosqlite
 import aiohttp
 from cogs.CustomPrefix import get_prefix
+from cogs.utils.helpers import Caching
+from pprint import pprint
 # Loading the .env file to use the token
 load_dotenv()
+
 
 # Logging
 logger = logging.getLogger('discord')
@@ -50,10 +53,6 @@ async def bot_prepare():
                 prefix TEXT
             )""")
     await bot.db.commit()
-    
-    # cursor = await bot.db.execute("SELECT * FROM prefixes")
-    # prefixes = await cursor.fetchall()
-    # bot.cached.guild_prefixes = {prefix_pair[0]:prefix_pair[1] for prefix_pair in prefixes}
 
     await bot.db.execute("""
             CREATE TABLE IF NOT EXISTS reactrole (
@@ -64,8 +63,6 @@ async def bot_prepare():
                 guild_id INTEGER
             )""")
     await bot.db.commit()
-    
-    await bot.db.execute("SELECT * FROM reactrole")
 
     await bot.db.execute("""
             CREATE TABLE IF NOT EXISTS warnings (
@@ -76,6 +73,33 @@ async def bot_prepare():
     await bot.db.commit()
 
 bot.loop.run_until_complete(bot_prepare())
+
+
+async def cache_process():
+    async def caching_objs():
+        pref = Caching()
+        await pref._init(conn=bot.db, table_name="prefixes")
+
+        reactrole = Caching()
+        await reactrole._init(conn=bot.db, table_name="reactrole")
+
+        warnings = Caching()
+        await warnings._init(conn=bot.db, table_name="warnings")
+
+        return pref, reactrole, warnings
+
+    bot.prefixes_cache, bot.reactrole_cache, bot.warnings_cache = await caching_objs()
+    prefixes_initial_data = await bot.prefixes_cache.get_fresh_data()
+    reactrole_initial_data = await bot.reactrole_cache.get_fresh_data()
+    warnings_initial_data = await bot.warnings_cache.get_fresh_data()
+    pprint(prefixes_initial_data)
+    print('-----------------------------')
+    pprint(reactrole_initial_data)
+    print('-----------------------------')
+    pprint(warnings_initial_data)
+    print('-----------------------------')
+
+bot.loop.run_until_complete(cache_process())
 
 if __name__ == '__main__':
     for filename in os.listdir(os.getcwd() + "/src/cogs"):

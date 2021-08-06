@@ -47,7 +47,7 @@ class ReactionRole(commands.Cog):
         if payload.member.bot:
             return
 
-        cur = await self.c.execute("SELECT * FROM reactrole WHERE guild_id = ?", (payload.guild_id,))
+        cur = await self.db.execute("SELECT * FROM reactrole WHERE guild_id = ?", (payload.guild_id,))
         data = await cur.fetchall()
 
         if not data:

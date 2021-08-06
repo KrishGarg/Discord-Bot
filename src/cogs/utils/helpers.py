@@ -21,20 +21,38 @@ class Caching:
         The cache/data stored. You can access the local cache from this attribute or use
         the methods update_local_cache and get_local_cache.
     """
-    async def __init__(self, *, connection: aiosqlite.Connection, table_name: str, datatype: str = 'dict') -> None:
-        self.conn: aiosqlite.Connection = connection
+
+    def __init__(self, *, datatype: str = 'dict') -> None:
+        if not datatype in ('tuple', 'dict'):
+            raise CacheError("Invalid Datatype.")
+        self.default_datatype: str = datatype
+
+        self.data = None
+
+    async def _init(self, *, conn: aiosqlite.Connection, table_name: str):
+        """
+        _init 2nd part of the __init__. Needed to divide in 2 because this needed
+        to be asynchronous.
+
+        Parameters
+        ----------
+        conn : aiosqlite.Connection
+            The sqlite connection to the database.
+        table_name : str
+            The table name in the database to cache data for.
+
+        Raises
+        ------
+        CacheError
+            General exception for caching. Raised here if the table is invalid.
+        """
+        self.conn: aiosqlite.Connection = conn
 
         cur = await self.conn.execute("SELECT count(name) FROM sqlite_master WHERE type='table' AND name=?", (table_name, ))
         if_table_exists_check = await cur.fetchall()
         if if_table_exists_check == 0:
             raise CacheError("Invalid Table.")
         self.table_name: str = table_name
-
-        if not datatype in ('tuple', 'dict'):
-            raise CacheError("Invalid Datatype.")
-        self.default_datatype: str = datatype
-
-        self.data = None
 
     async def get_fresh_data(self) -> Union[List[tuple], Dict[int, List[list]]]:
         """
@@ -74,8 +92,8 @@ class Caching:
             guild_id_index = next(
                 (column[0] for column in table_schema if column[1] == "guild_id"), [])
 
-            if not guild_id_index:
-                raise CacheError(textwrap.dedent(f"""There is no column found named 'guild id' 
+            if guild_id_index == []:
+                raise CacheError(textwrap.dedent(f"""There is no column found named 'guild_id' 
                 in the table '{self.table_name}'. Please edit the table to have the specified 
                 column or switch the default datatype to 'tuple'. Do keep in mind tuples are 
                 harder to manage."""))
