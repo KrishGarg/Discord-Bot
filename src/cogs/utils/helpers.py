@@ -17,7 +17,7 @@ class Caching:
     default_datatype : str, optional
         The datatype in which the data will be returned in the object, by default 'dict'.
         Choose between 'tuple' and 'dict'. 'tuple' is just shorthand for List[tuple].
-    data : Union[List[tuple], Dict[int, list]]
+    data : Union[List[tuple], Dict[int, list[list]]]]
         The cache/data stored. You can access the local cache from this attribute or use
         the methods update_local_cache and get_local_cache.
     """
@@ -36,7 +36,7 @@ class Caching:
 
         self.data = None
 
-    async def get_fresh_data(self) -> Union[List[tuple], Dict[int, list]:]:
+    async def get_fresh_data(self) -> Union[List[tuple], Dict[int, List[list]]]:
         """
         get_fresh_data Method to get new and fresh data from the database for the table. 
         This method sets the `self.data` with the current data from the database and also
@@ -44,7 +44,7 @@ class Caching:
 
         Returns
         -------
-        Union[List[tuple], Dict[int, list]]
+        Union[List[tuple], Dict[int, list[list]]]]
             Depends on you chose in the initializing. Default is dict with guild_id as the key.
         """
 
@@ -80,14 +80,21 @@ class Caching:
                 column or switch the default datatype to 'tuple'. Do keep in mind tuples are 
                 harder to manage."""))
 
-            self.table_schema = table_schema
-
             if guild_id_index == 0:
+                self.local_data_schema = {
+                    column[1]: column[0]-1 for column in table_schema if not column[1] == "guild_id"}
                 self.data = {data_packet[guild_id_index]: [
                     [*datap[1:]] for datap in all_data if datap[guild_id_index] == data_packet[guild_id_index]] for data_packet in all_data}
+
             elif guild_id_index == len(table_schema) - 1:
+                self.local_data_schema = {
+                    column[1]: column[0] for column in table_schema if not column[1] == "guild_id"}
                 self.data = {data_packet[guild_id_index]: [
                     [*datap[:-1]] for datap in all_data if datap[guild_id_index] == data_packet[guild_id_index]] for data_packet in all_data}
+
             else:
+                self.local_data_schema = {column[1]: (
+                    column[0] if column[0] < guild_id_index else column[0]-1) for column in table_schema if not column[1] == "guild_id"}
                 self.data = {data_packet[guild_id_index]: [[*datap[:guild_id_index], *datap[guild_id_index+1:]]
                                                            for datap in all_data if datap[guild_id_index] == data_packet[guild_id_index]] for data_packet in all_data}
+            return self.data
