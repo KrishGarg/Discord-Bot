@@ -6,10 +6,10 @@ import shlex
 import asyncio
 from cogs.utils import custom_errors
 
+
 class CustomEmbed(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
-
+        self.bot: commands.Bot = bot
 
     @commands.command(
         name="One Line Embed Builder",
@@ -22,7 +22,8 @@ class CustomEmbed(commands.Cog):
     )
     @commands.has_permissions(administrator=True)
     async def _onelineembed(self, ctx, channel: discord.TextChannel, color: typing.Union[commands.ColorConverter, converters.NameToColorConverter], *, title_and_description_separated_by_inverted_commas):
-        header, description = shlex.split(title_and_description_separated_by_inverted_commas)
+        header, description = shlex.split(
+            title_and_description_separated_by_inverted_commas)
         em = discord.Embed(
             title=header,
             description=description,
@@ -39,7 +40,6 @@ class CustomEmbed(commands.Cog):
         await channel.send(embed=em)
         await ctx.message.delete()
         await ctx.send("Sent the message!", delete_after=3)
-
 
     @commands.command(
         name="Eloborative Embed Builder",
@@ -59,7 +59,7 @@ You will have 10 seconds to fill every field. If you have long text, have it cop
 The process will start in 5 seconds.
         ''')
         await asyncio.sleep(5)
-        check = lambda m: m.author==ctx.author
+        def check(m): return m.author == ctx.author
 
         await the_msg.edit(content="Please send the channel in which the embed has to be sent to.")
         try:
@@ -125,6 +125,7 @@ The process will start in 5 seconds.
         await the_msg.edit(content=f"Embed sent to {channel.mention}!", delete_after=3)
         await asyncio.sleep(3)
         await ctx.message.delete()
+
 
 def setup(bot):
     bot.add_cog(CustomEmbed(bot))

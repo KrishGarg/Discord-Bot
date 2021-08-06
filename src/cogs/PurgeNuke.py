@@ -3,9 +3,10 @@ import asyncio
 import discord
 from discord.ext import commands
 
+
 class PurgeNuke(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: commands.Bot = bot
 
     # Purge Command
     @commands.command(
@@ -21,10 +22,10 @@ class PurgeNuke(commands.Cog):
     async def _purge(self, ctx, num: int, user: discord.Member = None):
 
         if user:
-            check_func = lambda m: m.author == user and not m.pinned
+            def check_func(m): return m.author == user and not m.pinned
 
         else:
-            check_func = lambda m: not m.pinned
+            def check_func(m): return not m.pinned
 
         if 0 < num < 100:
             await ctx.channel.purge(limit=num + 1, bulk=True, check=check_func)
@@ -95,9 +96,12 @@ class PurgeNuke(commands.Cog):
             old_channel = ctx.channel
             new_channel = await old_channel.clone(reason="Has been NUKED!")
             await old_channel.delete()
-            embed1 = discord.Embed(title="NUKED!",description=f'**This channel was nuked by {ctx.author.mention}.**',color=0x00ff00)
-            embed1.set_footer(text=f'{self.bot.user.name}',icon_url=self.bot.user.avatar_url)
-            embed1.set_image(url="https://media2.giphy.com/media/HhTXt43pk1I1W/giphy.gif?cid=ecf05e47l2gij7b6xv29vavlho3z6mxdi8bdm3o626p2pfcb&rid=giphy.gif&ct=g")
+            embed1 = discord.Embed(
+                title="NUKED!", description=f'**This channel was nuked by {ctx.author.mention}.**', color=0x00ff00)
+            embed1.set_footer(text=f'{self.bot.user.name}',
+                              icon_url=self.bot.user.avatar_url)
+            embed1.set_image(
+                url="https://media2.giphy.com/media/HhTXt43pk1I1W/giphy.gif?cid=ecf05e47l2gij7b6xv29vavlho3z6mxdi8bdm3o626p2pfcb&rid=giphy.gif&ct=g")
             await new_channel.send(embed=embed1)
             return
 

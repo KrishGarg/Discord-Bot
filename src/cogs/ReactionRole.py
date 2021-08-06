@@ -1,17 +1,19 @@
 import discord
 from discord.ext import commands
+import aiosqlite
+
 
 class ReactionRole(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
-        self.db = bot.db
+        self.bot: commands.Bot = bot
+        self.db: aiosqlite.Connection = bot.db
 
     @commands.command(
         name="ReactRole Command",
         description="A command to set-up reaction role on a message.",
         usage="rr <emoji> <role> <message_id>",
         aliases=[
-            'rr', 
+            'rr',
             'reactrole'
         ]
     )
@@ -53,7 +55,8 @@ class ReactionRole(commands.Cog):
         else:
             for x in data:
                 if x[2] == str(payload.emoji) and int(x[3]) == payload.message_id:
-                    role = discord.utils.get(self.bot.get_guild(payload.guild_id).roles, id=x[1])
+                    role = discord.utils.get(self.bot.get_guild(
+                        payload.guild_id).roles, id=x[1])
                     await payload.member.add_roles(role)
 
     @commands.Cog.listener()
@@ -66,7 +69,8 @@ class ReactionRole(commands.Cog):
         else:
             for x in data:
                 if str(payload.emoji)[-1:] in x[2] and int(x[3]) == payload.message_id:
-                    role = discord.utils.get(self.bot.get_guild(payload.guild_id).roles, id=x[1])
+                    role = discord.utils.get(self.bot.get_guild(
+                        payload.guild_id).roles, id=x[1])
                     await self.bot.get_guild(payload.guild_id).get_member(payload.user_id).remove_roles(role)
 
 

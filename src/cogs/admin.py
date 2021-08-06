@@ -65,11 +65,13 @@ class GlobalChannel(commands.Converter):
             try:
                 channel_id = int(argument, base=10)
             except ValueError:
-                raise commands.BadArgument(f'Could not find a channel by ID {argument!r}.')
+                raise commands.BadArgument(
+                    f'Could not find a channel by ID {argument!r}.')
             else:
                 channel = ctx.bot.get_channel(channel_id)
                 if channel is None:
-                    raise commands.BadArgument(f'Could not find a channel by ID {argument!r}.')
+                    raise commands.BadArgument(
+                        f'Could not find a channel by ID {argument!r}.')
                 return channel
 
 
@@ -86,7 +88,8 @@ class Admin(commands.Cog):
             process = await asyncio.create_subprocess_shell(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             result = await process.communicate()
         except NotImplementedError:
-            process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            process = subprocess.Popen(
+                command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             result = await self.bot.loop.run_in_executor(None, process.communicate)
 
         return [output.decode() for output in result]
@@ -108,7 +111,6 @@ class Admin(commands.Cog):
             return f'```py\n{e.__class__.__name__}: {e}\n```'
         return f'```py\n{e.text}{"^":>{e.offset}}\n{e.__class__.__name__}: {e}```'
 
-
     @commands.command(
         name="Load Module",
         description="A command used to load a cog/extension. Bot Owner Only.",
@@ -126,7 +128,6 @@ class Admin(commands.Cog):
             await ctx.send(f'{e.__class__.__name__}: {e}')
         else:
             await ctx.send('\N{OK HAND SIGN}')
-
 
     @commands.command(
         name="Unload Module",
@@ -146,10 +147,9 @@ class Admin(commands.Cog):
         else:
             await ctx.send('\N{OK HAND SIGN}')
 
-
     @commands.group(
-        name='Reload Module', 
-        hidden=True, 
+        name='Reload Module',
+        hidden=True,
         invoke_without_command=True,
         description="A command to reload a module. Bot Owner Only.",
         usage="reload <module>",
@@ -166,10 +166,9 @@ class Admin(commands.Cog):
         else:
             await ctx.send('\N{OK HAND SIGN}')
 
-
     @commands.command(
-        pass_context=True, 
-        hidden=True, 
+        pass_context=True,
+        hidden=True,
         name='Evaluate',
         description="A command to evaluate some python code. Bot Owner Only.",
         usage="eval <code (preferrably in code blocks)>",

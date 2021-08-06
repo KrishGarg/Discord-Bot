@@ -4,6 +4,7 @@ from colour import Color
 from .custom_errors import *
 import yarl
 
+
 class NameToColorConverter(commands.Converter):
     """
     This converter is used to convert names of colors
@@ -40,7 +41,8 @@ class NameToColorConverter(commands.Converter):
             except TypeError:
                 raise NameToColorFail('Conversion to discord color failed.')
             return x
-        
+
+
 class EmojiURL:
     def __init__(self, *, animated, url):
         self.url = url
@@ -60,6 +62,7 @@ class EmojiURL:
                     raise RuntimeError
                 return cls(animated=url.path.endswith('.gif'), url=url)
             except Exception:
-                raise commands.BadArgument('Not a valid or supported emoji URL.') from None
+                raise commands.BadArgument(
+                    'Not a valid or supported emoji URL.') from None
         else:
             return cls(animated=partial.animated, url=str(partial.url))

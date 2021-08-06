@@ -1,5 +1,6 @@
 from discord.ext import commands
 
+
 class NameToColorFail(commands.CheckFailure):
     """
     This error is mainly used for the embed command
@@ -7,6 +8,7 @@ class NameToColorFail(commands.CheckFailure):
     error happens.
     """
     pass
+
 
 class NotGuildOwner(commands.CheckFailure):
     """

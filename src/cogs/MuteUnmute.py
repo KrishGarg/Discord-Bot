@@ -6,7 +6,7 @@ from discord.ext import commands
 
 class MuteUnmute(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: commands.Bot = bot
 
     # Create mute role command
     @commands.command(
@@ -63,8 +63,7 @@ class MuteUnmute(commands.Cog):
             pass
 
         await sent.edit(
-            content=
-            "I have created the muted role and its set so that anyone with that role won't be able to speak in any channel."
+            content="I have created the muted role and its set so that anyone with that role won't be able to speak in any channel."
         )
         return
 
@@ -284,7 +283,7 @@ You will stay muted till a moderator unmutes you!
         ''')
 
         try:
-            dmemb = discord.Embed(title="You were MUTED!", color=0x00ff00,description=f'''
+            dmemb = discord.Embed(title="You were MUTED!", color=0x00ff00, description=f'''
     You were temporarily muted in **{ctx.guild.name}** by {ctx.author.mention} for {timemsg}!
             ''')
             dmemb.set_footer(
@@ -292,7 +291,7 @@ You will stay muted till a moderator unmutes you!
                 icon_url=f"{self.bot.user.avatar_url}"
             )
             muteddm = await user.create_dm()
-            await muteddm.send(embed= dmemb)
+            await muteddm.send(embed=dmemb)
         except:
             pass
 

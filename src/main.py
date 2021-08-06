@@ -12,17 +12,21 @@ load_dotenv()
 # Logging
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+handler = logging.FileHandler(
+    filename='discord.log', encoding='utf-8', mode='w')
+handler.setFormatter(logging.Formatter(
+    '%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
 # Initializing the bot
-bot = commands.Bot(command_prefix=get_prefix, help_command=None, intents=discord.Intents.all(), case_insensitive=True)
+bot = commands.Bot(command_prefix=get_prefix, help_command=None,
+                   intents=discord.Intents.all(), case_insensitive=True)
 
 # Bot owners
 bot.owner_ids = {453875226757955585, 506093256501755904}
 
 bot.DEFAULT_PREFIX = "$"
+
 
 async def pref_help(guild_id: int):
     get = await bot.db.execute("SELECT prefix FROM prefixes WHERE guild_id = ?", (guild_id,))
@@ -34,11 +38,12 @@ async def pref_help(guild_id: int):
 
 bot.prefix = pref_help
 
+
 async def bot_prepare():
     bot.ses = aiohttp.ClientSession()
-    
+
     bot.db = await aiosqlite.connect('main.db')
-        
+
     await bot.db.execute("""
             CREATE TABLE IF NOT EXISTS prefixes (
                 guild_id INTEGER,
@@ -63,7 +68,7 @@ async def bot_prepare():
                 guild_id INTEGER
             )""")
     await bot.db.commit()
-    
+
 bot.loop.run_until_complete(bot_prepare())
 
 if __name__ == '__main__':

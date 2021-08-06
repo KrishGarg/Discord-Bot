@@ -7,6 +7,7 @@ from cogs.utils.converters import EmojiURL
 EMOJI_REGEX = re.compile(r'<a?:.+?:([0-9]{15,21})>')
 EMOJI_NAME_REGEX = re.compile(r'[0-9a-zA-Z\_]{2,32}')
 
+
 def emoji_name(argument, *, regex=EMOJI_NAME_REGEX):
     m = regex.match(argument)
     if m is None:
@@ -16,7 +17,7 @@ def emoji_name(argument, *, regex=EMOJI_NAME_REGEX):
 
 class OtherModCmds(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: commands.Bot = bot
 
     # Find Message Command
     @commands.command(
@@ -32,7 +33,7 @@ class OtherModCmds(commands.Cog):
     async def _findmessage(self, ctx, id1: int):
         try:
             the_msg = await ctx.channel.fetch_message(id1)
-            await the_msg.reply(content="Gotcha!",mention_author=False)
+            await the_msg.reply(content="Gotcha!", mention_author=False)
         except:
             raise commands.BadArgument()
 
@@ -155,9 +156,9 @@ class OtherModCmds(commands.Cog):
         datetime1 = discord.utils.snowflake_time(id1)
         datetime2 = discord.utils.snowflake_time(id2)
         if datetime1 > datetime2:
-            time1,time2 = datetime1,datetime2
+            time1, time2 = datetime1, datetime2
         else:
-            time1,time2 = datetime2,datetime1
+            time1, time2 = datetime2, datetime1
         difference = (time1-time2)
         await ctx.send(f'Hours: {difference.seconds//3600}\nMinutes: {(difference.seconds//60)%60}\nSeconds: {difference.seconds}\nMicroseconds: {difference.microseconds}')
 
@@ -193,7 +194,8 @@ class OtherModCmds(commands.Cog):
 
         reason = f'Action done by {ctx.author} (ID: {ctx.author.id})'
 
-        emoji_count = sum(e.animated == emoji.animated for e in ctx.guild.emojis)
+        emoji_count = sum(
+            e.animated == emoji.animated for e in ctx.guild.emojis)
         if emoji_count >= ctx.guild.emoji_limit:
             return await ctx.send('There are no more emoji slots in this server.')
 
@@ -203,7 +205,8 @@ class OtherModCmds(commands.Cog):
             if int(resp.headers['Content-Length']) >= (256 * 1024):
                 return await ctx.send('Image is too big.')
             data = await resp.read()
-            coro = ctx.guild.create_custom_emoji(name=name, image=data, reason=reason)
+            coro = ctx.guild.create_custom_emoji(
+                name=name, image=data, reason=reason)
             async with ctx.typing():
                 try:
                     created = await asyncio.wait_for(coro, timeout=10.0)

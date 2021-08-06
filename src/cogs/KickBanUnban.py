@@ -4,7 +4,7 @@ from discord.ext import commands
 
 class KickBanUnban(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: commands.Bot = bot
 
     # Kick Command
     @commands.command(
@@ -33,13 +33,12 @@ class KickBanUnban(commands.Cog):
     ''',
             color=0x00ff00)
         dm_embed.set_footer(
-                text=f"{self.bot.user.name}",
-                icon_url=f"{self.bot.user.avatar_url}"
-            )
+            text=f"{self.bot.user.name}",
+            icon_url=f"{self.bot.user.avatar_url}"
+        )
         await usersdm.send(embed=dm_embed)
         await user.kick(
-            reason=
-            f'{reason1} -Kicked By {ctx.author.name}#{ctx.author.discriminator}')
+            reason=f'{reason1} -Kicked By {ctx.author.name}#{ctx.author.discriminator}')
         await ctx.send(
             f"I kicked {user.mention} with the reason given as `{reason1}`")
 
@@ -79,7 +78,6 @@ class KickBanUnban(commands.Cog):
             await ctx.send("Lol you have ban perms but you are not as powerful as the guy you are trying to ban!")
             return
 
-        usersdm = await user.create_dm()
         dm_embed = discord.Embed(
             title="YOU HAVE BEEN BANNED!",
             description=f'''
@@ -92,10 +90,9 @@ class KickBanUnban(commands.Cog):
             text=f"{self.bot.user.name}",
             icon_url=f"{self.bot.user.avatar_url}"
         )
-        await usersdm.send(embed=dm_embed)
+        await user.send(embed=dm_embed)
         await user.ban(
-            reason=
-            f'{reason1} -Banned By {ctx.author.name}#{ctx.author.discriminator}')
+            reason=f'{reason1} -Banned By {ctx.author.name}#{ctx.author.discriminator}')
         await ctx.send(
             f"I banned {user.mention} with the reason given as `{reason1}`")
 
@@ -130,16 +127,15 @@ class KickBanUnban(commands.Cog):
     @commands.has_permissions(ban_members=True)
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def _unban(self, ctx, user_id: int, *, reason1="None Given"):
-        try:
-            await ctx.guild.unban(
-                user=discord.Object(user_id),
-                reason=
-                f'{reason1} -Unbanned by {ctx.author.name}#{ctx.author.discriminator}'
-            )
-            await ctx.send(
-                f"I unbanned {user} with the reason given as `{reason1}`")
-        except:
-            raise commands.BadArgument()
+        await ctx.guild.unban(
+            user=discord.Object(user_id),
+            reason=f'{reason1} -Unbanned by {ctx.author.name}#{ctx.author.discriminator}'
+        )
+        mem = self.bot.get_member(user_id)
+        if not mem:
+            mem = self.bot.fetch_member(user_id)
+        await ctx.send(
+            f"I unbanned {mem.name} with the reason given as `{reason1}`")
 
     # Unban command error handling
     @_unban.error

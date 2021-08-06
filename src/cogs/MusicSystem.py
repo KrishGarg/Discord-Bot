@@ -12,9 +12,10 @@ github repository: https://github.com/toxicrecker/DiscordUtils
 
 music = DiscordUtils.Music()
 
+
 class MusicSystem(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: commands.Bot = bot
 
     @commands.command(
         name="Join the VC Command",
@@ -214,7 +215,8 @@ class MusicSystem(commands.Cog):
             return await ctx.send("I don't think I am playing anything!")
         if float(vol) > 100:
             return await ctx.send("Sorry but the max volume that you can set is 100.")
-        song, volume = await player.change_volume(float(vol) / 100.0)  # volume should be a float between 0 to 1
+        # volume should be a float between 0 to 1
+        song, volume = await player.change_volume(float(vol) / 100.0)
         await ctx.send(f"Changed volume for {song.name} to {volume * 100}%")
         return
 
@@ -236,6 +238,7 @@ class MusicSystem(commands.Cog):
             return await ctx.send("I don't think I recieved a valid index!")
         await ctx.send(f"Removed {song.name} from queue")
         return
+
 
 def setup(bot):
     bot.add_cog(MusicSystem(bot))

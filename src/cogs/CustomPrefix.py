@@ -1,5 +1,5 @@
 from discord.ext import commands
-
+import aiosqlite
 
 async def get_prefix(bot, message):
     get = await bot.db.execute("SELECT prefix FROM prefixes WHERE guild_id = ?", (message.guild.id,))
@@ -14,8 +14,8 @@ async def get_prefix(bot, message):
 
 class CustomPrefix(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
-        self.db = bot.db
+        self.bot: commands.Bot = bot
+        self.db: aiosqlite.Connection = bot.db
 
     @commands.command(
         name="Prefix Changer/Viewer",
@@ -43,6 +43,7 @@ class CustomPrefix(commands.Cog):
     async def on_guild_remove(self, guild):
         await self.db.execute("DELETE FROM prefixes WHERE guild_id = ?", (guild.id, ))
         await self.db.commit()
+
 
 def setup(bot):
     bot.add_cog(CustomPrefix(bot))

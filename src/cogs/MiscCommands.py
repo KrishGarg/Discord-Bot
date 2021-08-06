@@ -6,7 +6,7 @@ from requests.exceptions import HTTPError
 
 class MiscCommands(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: commands.Bot = bot
 
     # Server Info Command!
     @commands.command(
@@ -87,8 +87,8 @@ class MiscCommands(commands.Cog):
             giforwebp = "gif"
 
         the_embed = discord.Embed(title=f'Avatar for {member}',
-                                    description="",
-                                    color=0x00ff00)
+                                  description="",
+                                  color=0x00ff00)
         the_embed.add_field(
             name="***__Click below to open the image in your browser!__***",
             value=f"[png]({png}) | [jpg]({jpg}) | [{giforwebp}]({webp})")
@@ -135,7 +135,8 @@ class MiscCommands(commands.Cog):
     @commands.cooldown(1, 20, commands.BucketType.user)
     async def _joke(self, ctx):
         try:
-            joke = requests.get('https://official-joke-api.appspot.com/random_joke').json()
+            joke = requests.get(
+                'https://official-joke-api.appspot.com/random_joke').json()
         except HTTPError:
             await ctx.send("There was some issue with our Joke API! Please try again later!!")
             return
@@ -157,7 +158,8 @@ class MiscCommands(commands.Cog):
     @commands.cooldown(1, 20, commands.BucketType.user)
     async def _joke2(self, ctx):
         try:
-            joke = requests.get('https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,racist,sexist,explicit').json()
+            joke = requests.get(
+                'https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,racist,sexist,explicit').json()
         except HTTPError:
             await ctx.send("There was some issue with our Joke API! Please try again later!!")
             return
@@ -200,4 +202,3 @@ class MiscCommands(commands.Cog):
 
 def setup(bot):
     bot.add_cog(MiscCommands(bot))
-

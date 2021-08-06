@@ -1,10 +1,12 @@
 import discord
 from discord.ext import commands
+import aiosqlite
+
 
 class WarningSys(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
-        self.db = bot.db
+        self.bot: commands.Bot = bot
+        self.db: aiosqlite.Connection = bot.db
 
     # Warn command
     @commands.command(

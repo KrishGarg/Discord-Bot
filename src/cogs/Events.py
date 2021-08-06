@@ -2,6 +2,7 @@ import time
 import discord
 from discord.ext import commands
 
+
 class Events(commands.Cog):
     def __init__(self, bot):
         self.bot: commands.Bot = bot
@@ -42,10 +43,11 @@ class Events(commands.Cog):
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
             return await ctx.send(f"The command is on cooldown! Try again in {error.retry_after :,.2f} seconds.")
-        
+
         # Soon will be changed and global error handling s00n:tm:
         if isinstance(error, commands.MissingRequiredArgument):
             return await ctx.send(f"`{await self.bot.prefix(ctx.guild.id)}{ctx.command.aliases[0]} {ctx.command.signature}`.")
+
 
 def setup(bot):
     bot.add_cog(Events(bot))

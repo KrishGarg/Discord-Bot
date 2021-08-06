@@ -2,10 +2,10 @@ import discord
 from discord.ext import commands
 import os
 
+
 class AdminOnly(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
-
+        self.bot: commands.Bot = bot
 
     @commands.command(
         name="Close Bot",
@@ -15,21 +15,20 @@ class AdminOnly(commands.Cog):
             'close',
             'stopbot',
             'logout'
-            ],
+        ],
         hidden=True
-        )
+    )
     @commands.is_owner()
     async def _logout(self, ctx):
         await ctx.send(f"See you later {ctx.author.mention}!")
         await self.bot.db.close()
         await self.bot.ses.close()
         await self.bot.close()
-    
+
     @_logout.error
     async def _logout_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
             await ctx.send("Ha! No!")
-
 
     @commands.command(
         name="Spam in Chat",
@@ -45,7 +44,7 @@ class AdminOnly(commands.Cog):
         await ctx.message.delete()
         for _ in range(count):
             await ctx.send(text)
-        
+
         await ctx.send("Done! OwO")
 
     @_spam.error
@@ -61,7 +60,6 @@ class AdminOnly(commands.Cog):
         if isinstance(error, commands.CommandError):
             await ctx.send("Some error occured boss!")
             return
-
 
     @commands.command(
         name="Reload all cogs",
@@ -84,7 +82,6 @@ class AdminOnly(commands.Cog):
         await x.edit(content="Reloaded!")
         return
 
-
     @commands.command(
         name="Ghost Spammer",
         description="A command to spam and then delete the messages. Bot Owner only.",
@@ -100,7 +97,6 @@ class AdminOnly(commands.Cog):
         for _ in range(count):
             await ctx.send(text, delete_after=0.1)
 
-
     @commands.command(
         name="Ghost DM Spammer",
         description="A command to spam someone's dms and then delete those. Bot Owner only.",
@@ -111,19 +107,20 @@ class AdminOnly(commands.Cog):
         hidden=True
     )
     @commands.is_owner()
-    async def _ghostdmspammer(self, ctx, user: discord.Member,count: int, *, text: str):
+    async def _ghostdmspammer(self, ctx, user: discord.Member, count: int, *, text: str):
         await ctx.message.delete()
         dm = await user.create_dm()
         try:
             for _ in range(count):
                 await dm.send(text, delete_after=0.1)
 
-            await ctx.send(f'{ctx.author.mention}, done the work xd.',delete_after=5)
+            await ctx.send(f'{ctx.author.mention}, done the work xd.', delete_after=5)
 
         except:
             await ctx.send("I think they have their dms closed!")
             return
         return
+
 
 def setup(bot):
     bot.add_cog(AdminOnly(bot))
