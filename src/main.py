@@ -50,6 +50,10 @@ async def bot_prepare():
                 prefix TEXT
             )""")
     await bot.db.commit()
+    
+    # cursor = await bot.db.execute("SELECT * FROM prefixes")
+    # prefixes = await cursor.fetchall()
+    # bot.cached.guild_prefixes = {prefix_pair[0]:prefix_pair[1] for prefix_pair in prefixes}
 
     await bot.db.execute("""
             CREATE TABLE IF NOT EXISTS reactrole (
@@ -60,6 +64,8 @@ async def bot_prepare():
                 guild_id INTEGER
             )""")
     await bot.db.commit()
+    
+    await bot.db.execute("SELECT * FROM reactrole")
 
     await bot.db.execute("""
             CREATE TABLE IF NOT EXISTS warnings (

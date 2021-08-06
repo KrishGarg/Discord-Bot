@@ -15,3 +15,15 @@ class NotGuildOwner(commands.CheckFailure):
     This error is used for the check 'is_server_owner'.
     """
     pass
+
+
+class CacheError(Exception):
+    """
+    CacheError A base/common error for the caching system.
+
+    Extends
+    -------
+    Exception :
+        A normal exception.
+    """
+    pass
