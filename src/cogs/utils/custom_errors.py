@@ -27,3 +27,15 @@ class CacheError(Exception):
         A normal exception.
     """
     pass
+
+
+class APIsError(Exception):
+    """
+    APIsError A base/common error for the api methods' errors.
+
+    Extends
+    -------
+    Exception :
+        A normal exception.
+    """
+    pass

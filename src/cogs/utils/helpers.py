@@ -1,7 +1,9 @@
 import aiosqlite
-from typing import List, Union, Dict
-from .custom_errors import CacheError
+from typing import List, Tuple, Union, Dict
+from .custom_errors import APIsError, CacheError
 import textwrap
+import aiohttp
+from urllib.parse import quote_plus
 
 
 class Caching:
@@ -116,3 +118,125 @@ class Caching:
                 self.data = {data_packet[guild_id_index]: [[*datap[:guild_id_index], *datap[guild_id_index+1:]]
                                                            for datap in all_data if datap[guild_id_index] == data_packet[guild_id_index]] for data_packet in all_data}
             return self.data
+
+    def get_from_main_local_cache(self):
+        pass
+    
+    def update_main_local_cache(self):
+        pass
+    
+    def get_from_temporary_local_cache(self):
+        pass
+    
+    def update_temporary_local_cache(self):
+        pass
+    
+    async def flush_and_upload_temporary_local_cache(self):
+        pass
+
+
+class APIs:
+    
+    RANDOM_JOKE_API_1 = "https://official-joke-api.appspot.com/random_joke"
+    RANDOM_JOKE_API_2 = "https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,racist,sexist,explicit"
+    RANDOM_QUOTE_API = "http://api.quotable.io/random"
+    STACK_OVERFLOW_QUERY_API = "https://api.stackexchange.com/2.2/search/advanced?order=desc&sort=activity&site=stackoverflow&q={query}"
+    
+    @classmethod
+    async def random_joke_1(cls, ses: aiohttp.ClientSession) -> dict:
+        """
+        random_joke_1 A helper method to get a random joke from a joke API.
+
+        Parameters
+        ----------
+        ses : aiohttp.ClientSession
+            The aiohttp session.
+
+        Returns
+        -------
+        dict
+            The response from the API.
+        """
+        async with ses.get(cls.RANDOM_JOKE_API_1) as res:
+            json_data = await res.json()
+            return json_data
+        
+    @classmethod
+    async def random_joke_2(cls, ses: aiohttp.ClientSession) -> dict:
+        """
+        random_joke_2 A helper method to get a random joke from another joke API.
+
+        Parameters
+        ----------
+        ses : aiohttp.ClientSession
+            The aiohttp session.
+
+        Returns
+        -------
+        dict
+            The response from the API.
+
+        Raises
+        ------
+        APIsError
+            Raises if we are rate limited.
+        """
+        async with ses.get(cls.RANDOM_JOKE_API_2) as res:
+            if not res.ok:
+                time_left = res.headers["Retry-After"]
+                raise APIsError(f"Rate Limited. Wait for {time_left} seconds to reset the limit.")
+    
+            json_data = await res.json()
+            return json_data
+        
+    @classmethod
+    async def random_quote(cls, ses: aiohttp.ClientSession) -> dict:
+        """
+        random_quote A helper method to get a random quote from the API.
+
+        Parameters
+        ----------
+        ses : aiohttp.ClientSession
+            The aiohttp session.
+
+        Returns
+        -------
+        dict
+            The response from the API.
+        """
+        async with ses.get(cls.RANDOM_QUOTE_API) as res:
+            json_data = await res.json()
+            return json_data
+        
+    @classmethod
+    async def stackoverflow_result(cls, ses: aiohttp.ClientSession, query: str) -> Tuple[str, dict]:
+        """
+        stackoverflow_result A helper method to get top results from stackoverflow for the given query.
+
+        Parameters
+        ----------
+        ses : aiohttp.ClientSession
+            The aiohttp session.
+        query : str
+            The query to search on stackoverflow for.
+
+        Returns
+        -------
+        Tuple[str, dict]
+            str:
+                The encoded query (with + instead of spaces.)
+            dict:
+                The response received from the API.
+
+        Raises
+        ------
+        APIsError
+            Raises if a response of above 400 is received.
+        """
+        encoded_search_query = quote_plus(query)
+        async with ses.get(cls.STACK_OVERFLOW_QUERY_API.format(query=encoded_search_query)) as res:
+            if not res.ok:
+                raise APIsError("Received a response of over 400.")
+            
+            data = await res.json()
+            return (encoded_search_query, data)
