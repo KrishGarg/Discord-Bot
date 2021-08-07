@@ -121,27 +121,27 @@ class Caching:
 
     def get_from_main_local_cache(self):
         pass
-    
+
     def update_main_local_cache(self):
         pass
-    
+
     def get_from_temporary_local_cache(self):
         pass
-    
+
     def update_temporary_local_cache(self):
         pass
-    
+
     async def flush_and_upload_temporary_local_cache(self):
         pass
 
 
 class APIs:
-    
+
     RANDOM_JOKE_API_1 = "https://official-joke-api.appspot.com/random_joke"
     RANDOM_JOKE_API_2 = "https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,racist,sexist,explicit"
     RANDOM_QUOTE_API = "http://api.quotable.io/random"
     STACK_OVERFLOW_QUERY_API = "https://api.stackexchange.com/2.2/search/advanced?order=desc&sort=activity&site=stackoverflow&q={query}"
-    
+
     @classmethod
     async def random_joke_1(cls, ses: aiohttp.ClientSession) -> dict:
         """
@@ -160,7 +160,7 @@ class APIs:
         async with ses.get(cls.RANDOM_JOKE_API_1) as res:
             json_data = await res.json()
             return json_data
-        
+
     @classmethod
     async def random_joke_2(cls, ses: aiohttp.ClientSession) -> dict:
         """
@@ -184,11 +184,12 @@ class APIs:
         async with ses.get(cls.RANDOM_JOKE_API_2) as res:
             if not res.ok:
                 time_left = res.headers["Retry-After"]
-                raise APIsError(f"Rate Limited. Wait for {time_left} seconds to reset the limit.")
-    
+                raise APIsError(
+                    f"Rate Limited. Wait for {time_left} seconds to reset the limit.")
+
             json_data = await res.json()
             return json_data
-        
+
     @classmethod
     async def random_quote(cls, ses: aiohttp.ClientSession) -> dict:
         """
@@ -207,7 +208,7 @@ class APIs:
         async with ses.get(cls.RANDOM_QUOTE_API) as res:
             json_data = await res.json()
             return json_data
-        
+
     @classmethod
     async def stackoverflow_result(cls, ses: aiohttp.ClientSession, query: str) -> Tuple[str, dict]:
         """
@@ -237,6 +238,6 @@ class APIs:
         async with ses.get(cls.STACK_OVERFLOW_QUERY_API.format(query=encoded_search_query)) as res:
             if not res.ok:
                 raise APIsError("Received a response of over 400.")
-            
+
             data = await res.json()
             return (encoded_search_query, data)
