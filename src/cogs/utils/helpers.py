@@ -51,7 +51,7 @@ class Caching:
         self.table_name = table_name
 
         self.data = None
-        
+
     @classmethod
     async def make_cleanly(cls, *, connection: aiosqlite.Connection, table_name: str, datatype: str = 'dict'):
         """

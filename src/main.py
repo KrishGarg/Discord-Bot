@@ -1,4 +1,3 @@
-import asyncio
 import os
 from dotenv import load_dotenv
 import discord
@@ -24,7 +23,8 @@ logger.addHandler(handler)
 
 # Initializing the bot
 bot = commands.Bot(command_prefix=get_prefix, help_command=None,
-                   intents=discord.Intents.all(), case_insensitive=True)
+                   intents=discord.Intents.all(), case_insensitive=True,
+                   status=discord.Status.dnd, activity=discord.Game('$help ← Default'))
 
 # Bot owners
 bot.owner_ids = {453875226757955585, 506093256501755904}

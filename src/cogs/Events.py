@@ -11,7 +11,6 @@ class Events(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print("We have logged in as {0.user}".format(self.bot))
-        await self.bot.change_presence(status=discord.Status.dnd, activity=discord.Game('$help ← Default'))
         start_time = time.time()
         self.bot._start_time = start_time
 
