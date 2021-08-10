@@ -1,3 +1,4 @@
+import asyncio
 import os
 from dotenv import load_dotenv
 import discord
@@ -77,14 +78,9 @@ bot.loop.run_until_complete(bot_prepare())
 
 async def cache_process():
     async def caching_objs():
-        pref = Caching()
-        await pref._init(conn=bot.db, table_name="prefixes")
-
-        reactrole = Caching()
-        await reactrole._init(conn=bot.db, table_name="reactrole")
-
-        warnings = Caching()
-        await warnings._init(conn=bot.db, table_name="warnings")
+        pref = await Caching.make_cleanly(connection=bot.db, table_name="prefixes")
+        reactrole = await Caching.make_cleanly(connection=bot.db, table_name="reactrole")
+        warnings = await Caching.make_cleanly(connection=bot.db, table_name="warnings")
 
         return pref, reactrole, warnings
 

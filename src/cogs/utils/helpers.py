@@ -24,37 +24,89 @@ class Caching:
         the methods update_local_cache and get_local_cache.
     """
 
-    def __init__(self, *, datatype: str = 'dict') -> None:
-        if not datatype in ('tuple', 'dict'):
-            raise CacheError("Invalid Datatype.")
-        self.default_datatype: str = datatype
-
-        self.data = None
-
-    async def _init(self, *, conn: aiosqlite.Connection, table_name: str):
+    def __init__(self, *, connection: aiosqlite.Connection, table_name: str, datatype: str = 'dict') -> None:
         """
-        _init 2nd part of the __init__. Needed to divide in 2 because this needed
-        to be asynchronous.
+        __init__ The contructor for the class, but this is not the way to make an object of this class, 
+        use the classmethod `make_cleanly` instead.
 
         Parameters
         ----------
-        conn : aiosqlite.Connection
-            The sqlite connection to the database.
+        connection : aiosqlite.Connection
+            The connection to the database.
         table_name : str
-            The table name in the database to cache data for.
+            The table to track the caching for.
+        datatype : str, optional
+            Choose between `dict` or `tuple`, by default 'dict'.
+            dict would be Dict[guild_id, rest_data] and tuple would be List[Tuple[raw_data]]
 
         Raises
         ------
         CacheError
-            General exception for caching. Raised here if the table is invalid.
+            If the invalid datatype is provided.s
         """
-        self.conn: aiosqlite.Connection = conn
+        if not datatype in ('tuple', 'dict'):
+            raise CacheError("Invalid Datatype.")
+        self.default_datatype: str = datatype
+        self.conn: aiosqlite.Connection = connection
+        self.table_name = table_name
 
-        cur = await self.conn.execute("SELECT count(name) FROM sqlite_master WHERE type='table' AND name=?", (table_name, ))
+        self.data = None
+        
+    @classmethod
+    async def make_cleanly(cls, *, connection: aiosqlite.Connection, table_name: str, datatype: str = 'dict'):
+        """
+        make_cleanly A classmethod, which should be treated as the contructor of this
+        class from the user's perspective. This method checks if the table exists and 
+        returns an object of the Caching class.
+
+        Parameters
+        ----------
+        connection : aiosqlite.Connection
+            The connection to the database.`
+        table_name : str
+            The table name to link the object's caching to.
+        datatype : str, optional
+            Choose between `dict` or `tuple`, by default 'dict'.
+            dict would be Dict[guild_id, rest_data] and tuple would be List[Tuple[raw_data]], by default 'dict'
+
+        Returns
+        -------
+        Caching
+            An object of the class itself.
+
+        Raises
+        ------
+        CacheError
+            If the table with the given name isn't found.
+        """
+        exists = await cls.__if_table_exists(connection, table_name)
+        if not exists:
+            raise CacheError("The table doesn't exist.")
+        return cls(connection=connection, table_name=table_name, datatype=datatype)
+
+    @staticmethod
+    async def __if_table_exists(conn: aiosqlite.Connection, table_name: str) -> bool:
+        """
+        __if_table_exists A helper function to check if the given table exists
+        in the database the given connection is connected to.
+
+        Parameters
+        ----------
+        conn : aiosqlite.Connection
+            The connection to the database.
+        table_name : str
+            The table name to check with.
+
+        Returns
+        -------
+        bool
+            True if table exists and false if not.
+        """
+        cur = await conn.execute("SELECT count(name) FROM sqlite_master WHERE type='table' AND name=?", (table_name, ))
         if_table_exists_check = await cur.fetchall()
-        if if_table_exists_check == 0:
-            raise CacheError("Invalid Table.")
-        self.table_name: str = table_name
+        if if_table_exists_check[0][0] == 0:
+            return False
+        return True
 
     async def get_fresh_data(self) -> Union[List[tuple], Dict[int, List[list]]]:
         """
